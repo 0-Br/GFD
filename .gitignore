@@ -1,16 +1,29 @@
-# LaTeX 编译产物
+# LaTeX 编译中间文件
 *.aux
+*.bbl
+*.bcf
+*.blg
+*.ent
+*.fdb_latexmk
+*.fls
 *.log
 *.out
-*.toc
+*.run.xml
 *.synctex.gz
-*.fls
-*.fdb_latexmk
-*.bbl
-*.blg
+*.synctex(busy)
+*.toc
+*.lof
+*.lot
+*.idx
+*.ilg
+*.ind
 *.nav
 *.snm
 *.vrb
-*.run.xml
-*.bcf
+*.xdv
+*.spl
 *-blx.bib
+
+# 系统
+.DS_Store
+Thumbs.db
