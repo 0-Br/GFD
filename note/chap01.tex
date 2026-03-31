@@ -1,0 +1,162 @@
+\section{基本方程组}
+
+\subsection{基本变量}
+
+我们定义以下用于描述流体状态和地球环境的变量:
+\begin{itemize}
+    \item[$\vel$]: \textbf{流体速度矢量}，$\vel = (u, v, w)$，表示流体的三维速度分布。
+
+    \item[$\pressure$]: \textbf{压力场}，描述流体中的压力分布。
+
+    \item[$\density$]: \textbf{密度场}，表示单位体积内的质量分布。
+
+    \item[$\temperature$]: \textbf{温度场}，描述流体的热状态。
+
+    \item[$\ptemp$]: \textbf{位温场}，定义为 $\ptemp = \temperature \left(\frac{\pref}{\pressure}\right)^{\frac{\gasconst}{\specheat}}$，其中 $\gasconst$ 是干空气气体常数，$\specheat$ 是干空气定压比热。
+
+    位温是流体微团通过干绝热过程达到参考气压时所具有的温度。
+    位温在干绝热过程中守恒，是研究大气稳定性和热力学过程的关键变量，能够消除压力变化对温度的影响，便于比较不同高度或不同气团的热状态。
+
+    \item[$\rotationvec$]: \textbf{地球自转角速度矢量}，取值约 $\frac{2\pi}{86164} = 7.292 \times 10^{-5}\,\mathrm{rad/s}$，方向指向地球自转轴北极。
+
+    该矢量用于描述地球自转对流体运动的影响，是科里奥利力的来源。
+
+    \item[$\coriolis$]: \textbf{科里奥利参数}，定义为 $\coriolis = 2\norm{\rotationvec} \sin\latitude$，其中 $\latitude$ 为纬度。
+
+    它表示地球自转在局地垂直方向上的投影，决定了科里奥利力的大小和方向，是大尺度地球流体动力学中的核心参数。
+
+    \item[$\gravity$]: \textbf{重力加速度矢量}，$\gravity = (0, 0, -g)$，取值约 $9.8\,\mathrm{m/s^2}$，方向垂直向下。
+
+    它是流体受力分析中的基本项，影响流体的静力平衡和运动过程，实际中可随地理位置和高度而略有变化。
+
+    \item[$\dissipation$]: \textbf{摩擦耗散项}，代表由分子粘性或湍流导致的能量损失。
+\end{itemize}
+
+\begin{insightbox}[白贝罗定律 (Buys Ballot's Law): “背风而立，低压在左，高压在右”]
+    在大尺度运动中，当科里奥利力与压力梯度力达到平衡时 (地转平衡)，流体将沿着等压线 (而非垂直于等压线) 运动，这种理想化的风被称为地转风。
+    在北半球，科里奥利力指向运动方向的右侧，为了平衡从高压指向低压的压力梯度力，风必须沿着等压线吹，使得低压区位于其左侧。
+    在南半球则相反。
+\end{insightbox}
+
+\subsection{流体力学算子 (Fluid Dynamics Operators)}
+
+流体动力学方程可以用一系列基本算子的组合来表达:
+\begin{itemize}
+    \item[$\matderiv{}$]: \textbf{全导数} (或称物质导数、拉格朗日导数)，描述随流体质点移动时物理量的变化率。
+
+    定义为:
+    \begin{equation}
+        \matderiv{} = \pde{}{\timevar} + \vel \cdot \nabla
+        \label{eq:material_derivative}
+    \end{equation}
+
+    \item[$\opA{\cdot}$]: \textbf{平流算子}，描述了物理量场被速度场输运的过程，是方程中的核心非线性项。
+
+    \item[$\opC{\cdot}$]: \textbf{科里奥利算子}，描述了在旋转参考系中运动物体受到的偏转效应，是一个线性算子。
+
+    \item[$\opP$]: \textbf{压力梯度算子}，描述了单位质量流体受到的压力梯度力。
+
+\end{itemize}
+
+\begin{insightbox}[理解平流算子]
+    平流算子 $\opA{\cdot}$ 描述了物理量被“流动搬运”的效应。
+    对于某一物理量，若某点上游为高值，下游为低值，即使该物理量本身不变 (拉格朗日导数为零) ，该点的测量值 (欧拉观点) 仍会因流体经过而上升。
+
+    平流算子中的负号体现了\textbf{“时变=平流+随体变化”}的物理意义。
+    对于标量场 $\phi$，考虑流体从低值区流向高值区 (即 $\vel \cdot \nabla \phi > 0$)，这意味着某固定点的上游具有更低的值。
+    因此，在该固定点会观测到更低的值被不断输运过来，导致在该点物理量 $\phi$ 随时间减小，即局地变化率 $\pde{\phi}{\timevar} < 0$。
+
+    动量方程中的平流算子是\textbf{非线性}的。
+    平流项 $\opA{\vel}$ 中速度场 $\vel$ 既是被输运的物理量，也决定了输运本身。
+    这种非线性是流体运动难以精确计算的根源，主要体现在以下两点:
+    \begin{itemize}
+        \item \textbf{多尺度相互作用与湍流}: 非线性使得不同尺度的运动耦合在一起。大尺度的涡旋在非线性作用下会破碎成更小尺度的涡，能量从大尺度向小尺度传递，最终在极小尺度上通过粘性耗散掉。这种跨尺度的能量级联是\textbf{湍流 (Turbulence)} 的本质特征，使得流场呈现出极其复杂和混乱的状态。
+        \item \textbf{对初值的敏感依赖性}: 非线性系统普遍存在着“蝴蝶效应”，即初始条件下的微小扰动会随着时间被指数级放大，导致长期预测变得不可能。
+    \end{itemize}
+\end{insightbox}
+
+\subsection{基本方程组}
+
+利用上述定义的变量和算子，我们可以写出地球流体动力学的核心方程组。
+
+\subsubsection{动量方程 (Momentum Equation)}
+
+动量方程描述了流体速度随时间的演化。
+\begin{itemize}
+    \item \textbf{欧拉形式 (Eulerian Form)}:
+    \begin{equation}
+        \pde{\vel}{\timevar} = \underbrace{\opA{\vel}}_{\text{平流项}} + \underbrace{\opC{\vel}}_{\text{科里奥利力}} + \underbrace{\opP}_{\text{压力梯度力}} + \underbrace{\gravity}_{\text{重力}} + \underbrace{\dissipation}_{\text{摩擦力}}
+        \label{eq:momentum_eulerian}
+    \end{equation}
+
+    \item \textbf{拉格朗日形式 (Lagrangian Form)}:
+    \begin{equation}
+        \matderiv{\vel} = \opC{\vel} + \opP + \gravity + \dissipation
+        \label{eq:momentum_lagrangian}
+    \end{equation}
+\end{itemize}
+
+\subsubsection{连续性方程 (Continuity Equation)}
+
+连续性方程方程描述了\textbf{质量守恒 (Mass Conservation)}。
+\begin{itemize}
+    \item \textbf{欧拉形式}:
+    \begin{equation}
+        \pde{\density}{\timevar} + \nabla \cdot (\density \vel) = 0
+        \label{eq:continuity_eulerian}
+    \end{equation}
+
+    \item \textbf{拉格朗日形式}:
+    \begin{equation}
+        \matderiv{\density} + \density(\nabla \cdot \vel) = 0
+        \label{eq:continuity_lagrangian}
+    \end{equation}
+\end{itemize}
+
+\subsubsection{状态方程 (Equation of State)}
+
+状态方程给出了热力学变量间的关系，对于理想气体 (如干空气) ，为\textbf{理想气体状态方程}:
+\begin{equation}
+    \pressure = \density \gasconst \temperature
+    \label{eq:ideal_gas_law}
+\end{equation}
+
+其中 $\gasconst$ 为干空气气体常数，约为 $287\,\mathrm{J/(kg \cdot K)}$。
+
+\subsubsection{热力学方程 (Thermodynamic Equation)}
+
+热力学方程描述了能量守恒。
+对于干空气而言，根据热力学第一定律:
+\begin{equation}
+    \nonadheat = \specheat \matderiv{\temperature} - \frac{1}{\density} \matderiv{\pressure}
+    \label{eq:thermodynamic}
+\end{equation}
+
+其中 $\nonadheat$ 为非绝热加热率 (单位: $\mathrm{J/(kg \cdot s)}$)，$\specheat$ 为干空气定压比热 (约为 $1005\,\mathrm{J/(kg \cdot K)}$)。
+
+使用位温 $\ptemp$，我们可以得到一个更简洁的形式:
+\begin{equation}
+    \nonadheat = \specheat \temperature \matderiv{\ln\ptemp}
+    \label{eq:thermodynamic_ptemp}
+\end{equation}
+
+\begin{proofbox}
+    对位温定义式取对数: $\ln\ptemp = \ln\temperature - \frac{\gasconst}{\specheat} \ln\pressure + \frac{\gasconst}{\specheat} \ln\pref$。
+
+    对上式求物质导数:
+    \begin{equation*}
+        \frac{1}{\ptemp} \matderiv{\ptemp} = \frac{1}{\temperature} \matderiv{\temperature} - \frac{\gasconst}{\specheat} \frac{1}{\pressure} \matderiv{\pressure}
+    \end{equation*}
+
+    利用状态方程 \eqref{eq:ideal_gas_law}，代入 \eqref{eq:thermodynamic_ptemp}:
+    \begin{equation*}
+        \specheat \temperature \matderiv{\ln\ptemp} = \specheat \matderiv{\temperature} - \frac{1}{\density} \matderiv{\pressure} = \nonadheat
+    \end{equation*}
+\end{proofbox}
+
+特别地，在\textbf{绝热过程} ($\nonadheat = 0$) 中，\textbf{位温是守恒量}。
+跟随流体微团运动时，位温保持不变:
+\begin{equation}
+    \matderiv{\ptemp} = 0
+    \label{eq:adiabatic_ptemp}
+\end{equation}

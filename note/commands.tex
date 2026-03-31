@@ -1,0 +1,171 @@
+\newtcolorbox{proofbox}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    fonttitle=\bfseries,
+    title={\textbf{证明}\ifstrempty{#1}{}{: ~\textbf{#1}}},
+    sharp corners,
+    boxsep=5pt,
+    left=5pt,
+    right=5pt,
+    top=8pt,
+    bottom=5pt,
+    breakable,
+    enhanced jigsaw
+}
+
+\newtcolorbox{insightbox}[1][]{
+    colback=orange!10!white,
+    colframe=orange!80!black,
+    fonttitle=\bfseries,
+    title={{\Large$\triangleright$}\ifstrempty{#1}{}{~\textbf{#1}}},
+    sharp corners,
+    boxsep=5pt,
+    left=5pt,
+    right=5pt,
+    top=8pt,
+    bottom=5pt,
+    breakable,
+    enhanced jigsaw
+}
+
+
+
+%======================================================================
+% 1. 变量定义 (Variable Definitions)
+%======================================================================
+
+% -- 基本矢量与坐标 (Basic Vectors & Coordinates) --
+\newcommand{\norm}[1]{\lVert #1 \rVert}  % 范数
+\newcommand{\ivec}[1]{\bm{#1}}           % 矢量
+\newcommand{\pos}{\ivec{x}}              % 位置矢量
+\newcommand{\vel}{\ivec{u}}              % 流体速度矢量 (u, v, w)
+\newcommand{\kvec}{\ivec{k}}             % 垂直单位矢量
+\newcommand{\gravity}{\ivec{g}}          % 重力加速度矢量
+\newcommand{\timevar}{t}                 % 时间
+\newcommand{\streamfunc}{\psi}           % 流函数
+
+% -- 地球旋转 (Earth Rotation) --
+\newcommand{\earthradius}{a}              % 地球半径
+\newcommand{\latitude}{\varphi}           % 纬度
+\newcommand{\rotationvec}{\ivec{\Omega}}  % 地球自转角速度矢量
+\newcommand{\coriolis}{f}                 % 科里奥利参数
+\newcommand{\rossby}{\beta}               % Rossby参数
+\newcommand{\ro}{\varepsilon}             % Rossby数
+
+% -- 热力学变量 (Thermodynamic Variables) --
+\newcommand{\pressure}{p}        % 压力
+\newcommand{\density}{\rho}      % 密度
+\newcommand{\temperature}{T}     % 温度
+\newcommand{\ptemp}{\theta}      % 位温
+\newcommand{\nonadheat}{Q}       % 非绝热加热
+
+% -- 物理常数与参数 (Physical Constants & Parameters) --
+\newcommand{\gravityconst}{g}   % 重力加速度常数
+\newcommand{\gasconst}{R_d}     % 干空气气体常数
+\newcommand{\specheat}{c_p}     % 定压比热
+\newcommand{\vspecheat}{c_v}    % 定容比热
+\newcommand{\viscosity}{\mu}    % 粘性系数
+\newcommand{\pref}{p_\text{ref}}     % 参考气压
+
+% -- 浅水系统变量 (Shallow Water Variables) --
+\newcommand{\freeheight}{\eta}    % 自由面高度
+\newcommand{\bottomheight}{h_b}   % 底部地形高度
+\newcommand{\depth}{H}            % 流体深度
+\newcommand{\gravpotential}{\phi} % 重力势
+
+% -- 涡度相关 (Vorticity-related) --
+\newcommand{\relvort}{\zeta}        % 相对涡度
+\newcommand{\absvort}{\zeta_{abs}}  % 绝对涡度
+\newcommand{\pv}{q}                 % 位涡
+
+% -- 尺度分析 (Scale Analysis) --
+\newcommand{\hvel}{U}            % 水平速度尺度
+\newcommand{\vvel}{W}            % 垂直速度尺度
+\newcommand{\hscale}{L}          % 水平长度尺度
+\newcommand{\vscale}{D}          % 垂直厚度尺度
+\newcommand{\timescale}{\tau}    % 时间尺度
+\newcommand{\vhratio}{\delta}    % 形态比
+
+% -- 波动相关 (Wave-related) --
+\newcommand{\complexexp}[1]{e^{i #1}}       % 复指数
+\newcommand{\complexexpminus}[1]{e^{-i #1}} % 复指数 (负号)
+\newcommand{\complexamp}[1]{\widehat{#1}}   % 复振幅
+\newcommand{\wavefunc}{\ivec{\psi}}         % 波函数
+\newcommand{\amplitude}{\ivec{A}}           % 振幅
+\newcommand{\wavenumber}{\ivec{k}}          % 波数
+\newcommand{\wavelength}{\ivec{\lambda}}    % 波长
+\newcommand{\wavespeed}{\ivec{c}}           % 相速度
+\newcommand{\frequency}{\omega}             % 角频率
+\newcommand{\period}{T}                     % 周期
+\newcommand{\phase}{\theta}                 % 相位
+
+% -- 湍流相关 (Turbulence-related) --
+\newcommand{\dissipation}{\ivec{\mathcal{F}}}  % 摩擦/耗散项
+\newcommand{\mviscosity}{\dissipation^{m}}     % 分子粘性力
+\newcommand{\tviscosity}{\dissipation^{\ast}}  % 湍流粘性力
+
+\newcommand{\re}{\text{Re}}                              % 雷诺数
+\newcommand{\mean}[1]{\mkern2mu \overline{#1} \mkern2mu} % 雷诺平均
+\newcommand{\fluct}[1]{#1'}                              % 脉动量
+\newcommand{\reynoldsstress}{\mathbf{T}}                 % 雷诺应力张量
+\newcommand{\tv}{\kappa}                                 % 湍流粘性系数
+\newcommand{\eddyvisch}{K_H}                             % 水平涡旋粘性系数
+\newcommand{\eddyviscv}{K_V}                             % 垂直涡旋粘性系数
+\newcommand{\eddyvisc}{\mathbf{K}}                       % 各向异性涡粘张量
+\newcommand{\mixinglength}{l_m}                          % 混合长度
+
+% -- Ekman层相关 (Ekman Layer-related) --
+\newcommand{\complex}[1]{\tilde{#1}}        % 复变量
+\newcommand{\flayer}[1]{#1^*}               % 摩擦层
+\newcommand{\ekmandepth}{\delta_E}          % Ekman深度
+\newcommand{\ekmantransport}{M_E}           % Ekman输送
+\newcommand{\wind}{{\ivec{\tau}}}           % 风应力矢量
+\newcommand{\eh}{E_H}                       % 水平Ekman数
+\newcommand{\ev}{E_V}                       % 垂直Ekman数
+
+% -- 层结流体相关 (Stratified Fluid) --
+\newcommand{\bvfreq}{N}                 % Brunt-Vaisala 频率
+\newcommand{\buoyancy}{B}               % 浮力
+\newcommand{\lapse}{\Gamma}             % 减温率
+\newcommand{\drylapse}{\Gamma_d}        % 干绝热减温率
+\newcommand{\scaleheight}{H_s}          % 标高
+
+%======================================================================
+% 2. 算子定义 (Operator Definitions)
+%======================================================================
+
+% -- 常微分
+\newcommand{\dd}[1]{\mkern2mu \mathrm{d} #1}
+
+% -- 导数 (Derivative) --
+\newcommand{\ode}[3][1]{%
+    \ifnum#1=1
+        \frac{\dd{#2}}{\dd{#3}}%
+    \else
+        \frac{\dd{^{#1} #2}}{\dd{#3^{#1}}}%
+    \fi
+}
+
+% -- 偏导数 (Partial Derivative) --
+\newcommand{\pde}[3][1]{%
+    \ifnum#1=1
+        \frac{\partial #2}{\partial #3}%
+    \else
+        \frac{\partial^{#1} #2}{\partial #3^{#1}}%
+    \fi
+}
+
+% -- 混合偏导数 (Mixed Partial Derivative) --
+\newcommand{\mpde}[3]{\frac{\partial^2 #1}{\partial #2 \partial #3}}
+
+% -- 全微分/物质导数 (Material Derivative) --
+\newcommand{\matderiv}[1]{\frac{\mathrm{D} #1}{\mathrm{D} \timevar}} % D/Dt = ∂/∂t + u ⋅ ∇
+
+% -- 核心动力学算子 (Core Dynamical Operators) --
+\newcommand{\opA}[1]{ -(\vel \cdot \nabla) #1 }           % 平流算子 (Advection Operator)
+\newcommand{\opC}[1]{ -2\rotationvec \times #1 }          % 科里奥利算子 (Coriolis Operator)
+\newcommand{\opP}{ -\frac{1}{\density} \nabla \pressure } % 压力梯度算子 (Pressure Gradient Operator)
+
+% -- 其他 (Others) --
+\newcommand{\opG}[1]{ \mathcal{L}_G #1 }  % 重力外波算子 (Gravity External Wave Operator)
+\newcommand{\opR}[1]{ \mathcal{L}_R #1 }  % Rossby波算子 (Rossby Wave Operator)

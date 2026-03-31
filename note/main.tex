@@ -1,0 +1,54 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{ctex}
+\usepackage{float, booktabs, parskip}
+\usepackage{amsmath, amsthm, amssymb, mathrsfs, bm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable, skins}
+
+\geometry{a4paper, left=2cm, right=2cm, top=2.5cm, bottom=2.5cm}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.5em}
+\allowdisplaybreaks[4]
+
+\input{commands.tex}
+
+\begin{document}
+
+\input{cover.tex}
+\clearpage
+\thispagestyle{empty}
+\null
+\clearpage
+
+\thispagestyle{empty}
+\tableofcontents
+\thispagestyle{empty}
+\clearpage
+\setcounter{page}{1}
+
+\input{chap01.tex}
+\clearpage
+
+\input{chap02.tex}
+\clearpage
+
+\input{chap03.tex}
+\clearpage
+
+\input{chap04.tex}
+\clearpage
+
+\input{chap05.tex}
+\clearpage
+
+\input{appendix.tex}
+\clearpage
+
+\input{homework.tex}
+\clearpage
+
+\end{document}

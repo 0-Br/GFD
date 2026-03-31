@@ -1,0 +1,745 @@
+\section{摩擦与湍流}
+
+\subsection{动量方程中的摩擦项}
+
+回到地球流体的动量方程。
+在第二章中，我们仅考虑了无粘情形。
+然而，完整的动量方程应包含\textbf{摩擦项 (Friction Term)} $\dissipation$，参见 \eqref{eq:momentum_eulerian} 和 \eqref{eq:momentum_lagrangian}。
+
+摩擦项在地球流体系统中扮演着双重角色:
+\begin{enumerate}
+    \item \textbf{能量耗散}
+
+    摩擦是系统动能耗散的主要机制。观测表明:
+    \begin{itemize}
+        \item 中尺度天气系统 (如气旋) 的特征时间尺度为3\textasciitilde7天，动能在此时间内显著衰减。
+        \item 海洋中尺度涡的寿命为数月至一年，同样受摩擦耗散控制。
+        \item 太阳辐射向地球系统输入能量的速率约 $240\,\mathrm{W/m^2}$，必然存在与之平衡的耗散机制。
+    \end{itemize}
+
+    如果不存在摩擦，地球系统将无限制地积累能量，这显然与观测矛盾。
+    因此，\textbf{摩擦是地球系统能量平衡的必要组成部分}。
+
+    \item \textbf{驱动力}
+
+    在海洋动力学中，表面风应力是驱动大洋环流的主要外力。
+    表面风会以摩擦的形式完成海气界面的动量交换，从而驱动Ekman输运和大尺度环流，例如:
+    \begin{itemize}
+        \item 西风带驱动副热带环流。
+        \item 信风驱动赤道流系。
+        \item 风应力旋度决定Sverdrup输运。
+    \end{itemize}
+
+    在海洋数值模式中存在着初始条件缺失的问题。
+    大气模式可以以观测数据作为初始条件，但对于海洋的观测仍然极其有限。
+    因此，在实际应用中，我们一般会从静止状态开始积分，逐步达到平衡状态。
+    在这个过程中，表面风应力是建立环流结构的主要驱动力。
+\end{enumerate}
+
+\vspace{1em}
+摩擦项 $\dissipation$ 包含两类物理机制:
+\begin{equation}
+    \dissipation = \mviscosity + \tviscosity
+    \label{eq:dissipation_decomposition}
+\end{equation}
+
+其中 $\mviscosity$ 是\textbf{分子粘性力}，$\tviscosity$ 为\textbf{湍流粘性力}。
+
+\subsubsection{分子粘性 (Molecular Viscosity)}
+
+分子粘性源于流体分子的随机热运动。
+相邻流体层之间由于分子扩散交换动量，产生粘性应力。
+对于牛顿流体，分子粘性力的计算公式由周培源先生给出:
+\begin{equation}
+    \mviscosity = \viscosity \nabla^2 \vel + \frac{\viscosity}{3} \nabla (\nabla \cdot \vel)
+    \label{eq:zhou_molecular_viscosity}
+\end{equation}
+
+其中 $\viscosity$ 为分子粘性系数。
+第一项表示速度场的扩散，第二项表示流体体积膨胀/压缩产生的粘性效应。
+
+对于不可压缩流体 ($\nabla \cdot \vel = 0$)，第二项消失，\eqref{eq:zhou_molecular_viscosity} 简化为:
+\begin{equation}
+    \mviscosity = \viscosity \nabla^2 \vel
+    \label{eq:molecular_friction}
+\end{equation}
+
+对于标准大气 ($T=15^\circ\mathrm{C}$，$p=1\,\mathrm{atm}$)，分子粘性系数为 $\viscosity_{\text{air}} \approx 1.5 \times 10^{-5}\,\mathrm{m^2/s}$。
+
+\subsubsection{湍流粘性 (Turbulent Viscosity)}
+
+当流体流动失稳，发展为湍流时，湍流涡旋的脉动速度 $\fluct{\vel}$ 将在不同尺度上输运动量。
+这种输运的统计平均效应，在宏观上表现为湍流粘性应力，其形式类似分子粘性，但强度远大于分子粘性。
+
+我们定义\textbf{雷诺数 (Reynolds Number)}:
+\begin{equation}
+    \re = \frac{\hvel \hscale}{\viscosity}
+    \label{eq:reynolds_number}
+\end{equation}
+
+雷诺数表征惯性力与粘性力的比值，其物理意义是衡量惯性效应相对于粘性耗散的强弱。
+
+不同尺度大气运动的雷诺数差异巨大:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccc}
+    \toprule
+    运动类型 & 特征尺度 $\hscale$ & 特征速度 $\hvel$ & 雷诺数 Re \\
+    \midrule
+    行星波 & $10^4\,\mathrm{km}$ & $10\,\mathrm{m/s}$ & $10^{13}$ \\
+    天气系统 & $10^3\,\mathrm{km}$ & $10\,\mathrm{m/s}$ & $10^{12}$ \\
+    中尺度对流 & $100\,\mathrm{km}$ & $10\,\mathrm{m/s}$ & $10^{11}$ \\
+    积云 & $2\,\mathrm{km}$ & $5\,\mathrm{m/s}$ & $10^{9}$ \\
+    边界层涡旋 & $100\,\mathrm{m}$ & $1\,\mathrm{m/s}$ & $10^{7}$ \\
+    \bottomrule
+    \end{tabular}
+    \caption{不同尺度大气运动的雷诺数}
+    \label{tab:reynolds_numbers}
+\end{table}
+
+对于海洋运动:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccc}
+    \toprule
+    运动类型 & 特征尺度 $\hscale$ & 特征速度 $\hvel$ & 雷诺数 Re \\
+    \midrule
+    大洋环流 & $10^3\,\mathrm{km}$ & $0.01\,\mathrm{m/s}$ & $10^{10}$ \\
+    中尺度涡 & $200\,\mathrm{km}$ & $0.5\,\mathrm{m/s}$ & $10^{11}$ \\
+    混合层湍流 & $10\,\mathrm{m}$ & $0.1\,\mathrm{m/s}$ & $10^{6}$ \\
+    \bottomrule
+    \end{tabular}
+    \caption{不同尺度海洋运动的雷诺数}
+    \label{tab:reynolds_numbers_ocean}
+\end{table}
+
+流体力学中，层流失稳转捩为湍流的临界雷诺数为 $\re_{\mathrm{cr}} \sim O(10^3)$。
+地球流体的雷诺数远远超过此临界值，因此\textbf{湍流是地球流体运动的主要形式}。
+
+在动量方程 \eqref{eq:momentum_eulerian} 中，分子粘性项与平流项的比值为:
+\begin{equation*}
+    \frac{\viscosity \nabla^2 \vel}{(\vel \cdot \nabla) \vel} \sim \frac{\viscosity}{\hvel \hscale} = \frac{1}{\re} \sim 10^{-13} \text{--} 10^{-6}
+\end{equation*}
+
+因此，在地球物理流体动力学中，\textbf{湍流粘性是主导因素，分子粘性可以忽略不计}。
+
+\subsection{湍流参数化 (Turbulence Parameterization)}
+
+\subsubsection{能量级联 (Energy Cascade)}
+
+湍流的特征是具有连续的尺度谱，其能量传递遵循\textbf{能量级联}机制:
+\begin{equation*}
+    \boxed{\text{大尺度运动} \xrightarrow{\text{不稳定的非线性过程}} \text{中等尺度涡旋} \xrightarrow{\text{涡旋拉伸破碎}} \text{更小尺度涡旋} \xrightarrow{\cdots} \text{分子尺度耗散}}
+\end{equation*}
+
+\begin{enumerate}
+    \item \textbf{注入尺度 ($10^3\,\mathrm{m} \sim 10^6\,\mathrm{m}$)}:
+    外源 (如气压梯度力、太阳辐射差异) 将能量注入到大尺度流体运动系统之中。
+
+    \item \textbf{惯性区 ($1\,\mathrm{m} \sim 10^3\,\mathrm{m}$)}:
+    能量通过非线性相互作用逐级传递到更小尺度，但在这个尺度范围内分子粘性仍然很弱。
+    能量传递速率 (能量通量 $\varepsilon$) 近似保持常数。
+    Kolmogorov理论预言此区域能谱为:
+    \begin{equation*}
+        E(k) = C \varepsilon^{2/3} k^{-5/3}
+    \end{equation*}
+
+    其中 $k$ 为波数，$C \approx 1.5$ 为Kolmogorov常数。
+
+    \item \textbf{耗散尺度 ($1\,\mathrm{mm} \sim 1\,\mathrm{m}$)}:
+    定义Kolmogorov尺度:
+    \begin{equation}
+        \eta = \left(\frac{\viscosity^3}{\varepsilon}\right)^{1/4}
+        \label{eq:kolmogorov_scale}
+    \end{equation}
+
+    当尺度小到此值时，分子粘性效应变得显著，能量最终以热的形式耗散。
+\end{enumerate}
+
+对于湍流运动而言，大尺度运动中的能量并不能直接被分子粘性耗散 (因为 $\re \gg 1$)，而是通过能量级联逐步传递到越来越小的尺度，直到达到Kolmogorov尺度 ($\eta \sim 1\,\mathrm{mm}$) 时才会被分子粘性耗散。
+该过程将跨越约9个数量级 (从 $10^6\,\mathrm{m}$ 到 $10^{-3}\,\mathrm{m}$)。
+理想情况下，若要完全模拟湍流运动，需要进行直接数值模拟 (Direct Numerical Simulation, DNS)，即解析从大尺度的所有尺度。
+所需网格数为:
+\begin{equation*}
+    N \sim \left(\frac{\hscale}{\eta}\right)^3 \sim \left(\frac{10^6}{10^{-3}}\right)^3 = 10^{27}
+\end{equation*}
+
+这是一个天文数字，即使是目前世界上最强大的超级计算机 ($\sim 10^{18}$ FLOPS) 也无法在合理时间内完成这样的计算。
+当前实际应用的大气模式，水平分辨率约为 $10\,\mathrm{km}$，海洋模式约为 $1 \text{--} 10\,\mathrm{km}$。
+这意味着只有处于注入尺度中的大部分天气系统可以被网格显式解析。
+在亚网格尺度，惯性区的绝大部分过程和全部耗散尺度的过程都无法解析。
+因此，必须采用\textbf{参数化方法 (Parameterization)}。
+用可解析的网格尺度变量来表征无法解析的亚网格尺度湍流对平均流的作用 (湍流脉动效应)。
+
+\subsubsection{湍流统计理论 (Turbulence Statistical Theory)}
+
+由于缺乏严格且易于处理的湍流理论，湍流参数化方案往往是\textbf{半经验、半理论}的。
+最经典的方案基于Boussinesq的\textbf{涡粘性假设 (Eddy Viscosity Hypothesis)}: 将湍流对大尺度运动的作用方式设想为类似于分子粘性影响宏观运动的方式，\textbf{假设湍流通过速度梯度产生动量输运，即认为作用力线性于大尺度运动的空间导数}。
+这一假设十分粗糙，我们还需要引入一个\textbf{湍流粘性系数 (Turbulent Viscosity Coefficient)}，记为 $\tv$。
+我们将复杂的非线性效应、非局地效应等误差都归入其中。
+因此，$\tv$ 不是一个普适的常数，而是依赖于流动状态的经验参数。
+
+这样做的优点是形式简洁，易于在数值模式中实现；物理图像清晰，符合直觉；且在多数情况下与观测定性吻合。
+但是，该假设的缺陷也很明显: 物理基础不够严格，基于类比而非严格推导；线性假设将在某些情况下失效 (如逆梯度输运、强非局地效应等)；无法描述湍流的各向异性和非平衡态特征；且湍流粘性系数的确定十分依赖经验或次网格模型。
+尽管还存在着很多局限性，但湍流统计理论仍然是当前大气海洋数值模式的主流选择，因为它在计算效率和物理合理性之间达到了较好的平衡。
+
+\begin{insightbox}[基于人工智能的湍流参数化方案]
+    传统的湍流统计理论忽略了湍流的记忆效应、非局地输运和各向异性等本质特征，因此无法准确描述湍流对大尺度运动的影响。
+    近年来快速发展的\textbf{机器学习和深度学习算法}，为突破这一瓶颈提供了新的思路和可能性:
+    \begin{enumerate}
+        \item \textbf{数据驱动的闭合建模}: 利用高分辨率模拟 (LES, DNS) 或观测数据，训练神经网络直接学习湍流脉动与平均流之间的关系，从而在一定程度上绕过物理假设的限制。
+        \item \textbf{非局地效应的捕捉}: 卷积神经网络 (CNN) 和注意力机制 (Attention) 可以提取空间上的多尺度特征，循环神经网络 (RNN/LSTM) 可以捕捉时间上的记忆效应，从而能够更好地表征非局地和非平衡湍流过程。
+        \item \textbf{融合物理约束}: 通过\textbf{Physics-Informed Neural Networks (PINNs)} 将守恒律 (质量、动量、能量)、对称性 (Galilean不变性、旋转不变性) 直接编码到神经网络的损失函数或网络架构中，确保预测的物理一致性。
+    \end{enumerate}
+
+    尽管机器学习在湍流参数化中潜力巨大，但仍面临\textbf{泛化能力、可解释性和数据稀缺}等挑战。
+    在未来的研究中，将人工智能方法与传统理论相结合的\textbf{混合建模 (Hybrid Modeling)} 可能是更现实的路径——用机器学习或深度学习算法修正传统参数化的误差项，而非完全替代。
+    同时，\textbf{数据同化}框架下的在线学习 (利用预报-观测偏差持续优化参数化)、\textbf{可解释AI}技术 (提取神经网络学到的物理规律)、以及\textbf{不确定性量化} (用贝叶斯神经网络评估参数化误差) 都是值得深入探索的前沿课题，有望进一步揭示湍流过程的物理规律并提升预测的可靠性。
+\end{insightbox}
+
+\subsection{雷诺平均方程 (Reynolds Averaged Navier-Stokes Equations)}
+
+\subsubsection{湍流雷诺应力 (Turbulent Reynolds Stress)}
+
+将瞬时物理量 $\wavefunc(\pos, \timevar)$ 分解为\textbf{平均态}与\textbf{脉动态}:
+\begin{equation}
+    \wavefunc = \mean{\wavefunc} + \fluct{\wavefunc}
+    \label{eq:reynolds_decomposition}
+\end{equation}
+
+\textbf{平均算子} $\mean{\cdot}$ 定义为一定时空范围内的统计平均值:
+\begin{equation}
+    \mean{\wavefunc}(\pos, \timevar) = \frac{1}{\Delta x \Delta y \Delta z \Delta \timevar} \int_{x - \Delta x/2}^{x + \Delta x/2} \int_{y - \Delta y/2}^{y + \Delta y/2} \int_{z - \Delta z/2}^{z + \Delta z/2} \int_{\timevar - \Delta \timevar/2}^{\timevar + \Delta \timevar/2} \wavefunc(\pos, \timevar) \dd{\pos} \dd{\timevar}
+    \label{eq:average_definition}
+\end{equation}
+
+其中 $\Delta x, \Delta y, \Delta z, \Delta \timevar$ 为取平均值的空间和时间尺度，依赖于测量方法和具体研究问题的要求。
+宏观上要足够小，微观上要足够大，以实现尺度分离。
+
+对应地，我们可以定义\textbf{脉动算子}，用于提取物理量的瞬时脉动部分:
+\begin{equation}
+    \fluct{\wavefunc} = \wavefunc - \mean{\wavefunc}
+    \label{eq:fluctuation_definition}
+\end{equation}
+
+平均算子和脉动算子满足以下运算法则:
+\begin{enumerate}
+    \item \textbf{线性 (Linearity)}: 平均算子和脉动算子均为线性算子。
+    \begin{equation}
+        \mean{c_1 \wavefunc_1 + c_2 \wavefunc_2} = c_1 \mean{\wavefunc_1} + c_2 \mean{\wavefunc_2}
+        \label{eq:average_linear}
+    \end{equation}
+    \begin{equation}
+        \fluct{(c_1 \wavefunc_1 + c_2 \wavefunc_2)} = c_1 \fluct{\wavefunc_1} + c_2 \fluct{\wavefunc_2}
+        \label{eq:fluctuation_linear}
+    \end{equation}
+
+    \item \textbf{幂等性 (Idempotence)}: 平均算子和脉动算子均为幂等算子。
+    \begin{equation}
+        \mean{\mean{\wavefunc}} = \mean{\wavefunc}, \quad \fluct{\fluct{\wavefunc}} = \fluct{\wavefunc}
+        \label{eq:idempotence}
+    \end{equation}
+
+    \item \textbf{正交性 (Orthogonality)}: 平均场的脉动为零，脉动场的平均为零。
+    \begin{equation}
+        \fluct{\mean{\wavefunc}} = 0, \quad \mean{\fluct{\wavefunc}} = 0
+        \label{eq:orthogonality}
+    \end{equation}
+
+    \item \textbf{微分与积分可交换性}: 平均算子和脉动算子与微分、积分运算可交换。
+    \begin{equation}
+        \mean{\pde{\wavefunc}{\timevar}} = \pde{\mean{\wavefunc}}{\timevar}, \quad \mean{\nabla \wavefunc} = \nabla \mean{\wavefunc}, \quad \mean{\int \wavefunc \dd \timevar} = \int \mean{\wavefunc} \dd \timevar, \quad \mean{\int \wavefunc \dd \pos} = \int \mean{\wavefunc} \dd \pos
+        \label{eq:average_exchangeability}
+    \end{equation}
+    \begin{equation}
+        \fluct{\left(\pde{\wavefunc}{\timevar}\right)} = \pde{\fluct{\wavefunc}}{\timevar}, \quad \fluct{(\nabla \wavefunc)} = \nabla \fluct{\wavefunc}, \quad \fluct{\left(\int \wavefunc \dd \timevar\right)} = \int \fluct{\wavefunc} \dd \timevar, \quad \fluct{\left(\int \wavefunc \dd \pos\right)} = \int \fluct{\wavefunc} \dd \pos
+        \label{eq:fluctuation_exchangeability}
+    \end{equation}
+
+    \item \textbf{乘积平均法则}: 乘积的平均场等于平均场的乘积加上脉动场乘积的平均场。
+    \begin{equation}
+        \mean{\wavefunc_1 \wavefunc_2} = \mean{\wavefunc_1} \mean{\wavefunc_2} + \mean{\fluct{\wavefunc_1} \fluct{\wavefunc_2}}
+        \label{eq:product_average_rule}
+    \end{equation}
+\end{enumerate}
+
+
+\begin{insightbox}[平均算子与脉动算子的代数结构]
+    \textbf{1. 互补投影算子 (Complementary Projection Operators)}
+
+    由于同时满足\textbf{线性}与\textbf{幂等性}，且二者之和为恒等算子 ($\mean{\cdot} + \fluct{\cdot} = I$)，它们构成了一对互补的\textbf{投影算子}。
+    函数空间因此被分解为两个直积子空间:
+    \begin{equation*}
+        X = \text{Im}(\mean{\cdot}) \oplus \text{Im}(\fluct{\cdot})
+    \end{equation*}
+
+    \begin{itemize}
+        \item \textbf{平均场空间} $\text{Im}(\mean{\cdot})$: 即为 $\text{Ker}(\fluct{\cdot})$，包含所有满足 $\fluct{\wavefunc}=0$ 的大尺度平滑运动。
+        \item \textbf{脉动场空间} $\text{Im}(\fluct{\cdot})$: 即为 $\text{Ker}(\mean{\cdot})$，包含所有满足 $\mean{\wavefunc}=0$ 的小尺度湍流涨落。
+    \end{itemize}
+
+    \textbf{2. 滤波特性 (Filtering)}
+
+    从信号处理角度，平均算子 $\mean{\cdot}$ 是一个\textbf{低通滤波器}，保留低频大尺度信号；而脉动算子 $\fluct{\cdot}$ 是一个\textbf{高通滤波器}，提取高频小尺度噪声。
+
+    \textbf{3. 非乘性与雷诺应力}
+
+    尽管平均算子和脉动算子是投影算子，但并非\textbf{代数同态 (Algebra Homomorphism)}，即 $\mean{\wavefunc_1 \wavefunc_2} \neq \mean{\wavefunc_1} \mean{\wavefunc_2}$。
+    这种\textbf{乘法结构的破坏}导致了 $\mean{\fluct{\wavefunc_1} \fluct{\wavefunc_2}}$ 项的出现。
+    物理上，这代表了被滤除的高频脉动场通过非线性作用反馈给低频平均场——这正是\textbf{湍流雷诺应力}的数学本质，也是湍流闭合问题的根源。
+\end{insightbox}
+
+\subsubsection{基本方程的平均化}
+
+我们假定流体近似于匀质且不可压缩，于是: $\fluct{\density} = 0$，$\density = \mean{\density}$。
+
+作用平均算子于连续性方程 \eqref{eq:continuity_eulerian}:
+\begin{equation*}
+    \mean{\pde{\density}{\timevar} + \nabla \cdot (\density\vel)} = \pde{\mean{\density}}{\timevar} + \nabla \cdot \mean{(\density\vel)} = \pde{\density}{\timevar} + \nabla \cdot (\density\mean{\vel}) = 0
+\end{equation*}
+
+得到平均化的连续性方程:
+\begin{equation}
+    \pde{\density}{\timevar} + \nabla \cdot (\density\mean{\vel}) = 0
+    \label{eq:continuity_reynolds}
+\end{equation}
+
+与连续性方程 \eqref{eq:continuity_eulerian} 相减，得到脉动场的连续性方程:
+\begin{equation}
+    \nabla \cdot (\density \fluct{\vel}) = 0
+    \label{eq:continuity_reynolds_fluct}
+\end{equation}
+
+使用 $\beta$ 平面近似 \eqref{eq:beta_plane}，对科里奥利参数应用平均算子:
+\begin{equation}
+    \mean{\coriolis} = \mean{\coriolis_0 + \rossby_0 y} = \coriolis_0 + \rossby_0 \mean{y} = \coriolis_0 + \rossby_0 y = \coriolis
+    \label{eq:coriolis_mean}
+\end{equation}
+
+因此，平均化的科里奥利力为:
+\begin{equation}
+    \mean{\opC{\vel}} = -\coriolis \kvec \times \mean{\vel}
+    \label{eq:coriolis_op_mean}
+\end{equation}
+
+对于压力梯度力和重力项:
+\begin{equation}
+    \mean{\opP + \gravity} = -\frac{1}{\density} \nabla \mean{\pressure} + \gravity
+    \label{eq:pressure_gradient_gravity_mean}
+\end{equation}
+
+我们定义\textbf{雷诺应力张量 (Reynolds Stress Tensor)}:
+\begin{equation}
+    \reynoldsstress = -\density \mean{\fluct{\vel} \otimes \fluct{\vel}}
+    \label{eq:reynolds_stress_tensor}
+\end{equation}
+
+对物质导数项 $\matderiv{\vel}$ 应用平均算子，利用平均化的连续性方程 \eqref{eq:continuity_reynolds_fluct}:
+\footnote{使用矢量恒等式 $\nabla \cdot (\ivec{f} \otimes \ivec{g}) = (\nabla \cdot \ivec{f}) \ivec{g} + (\ivec{f} \cdot \nabla) \ivec{g}$。}
+\begin{align*}
+    \mean{\matderiv{\vel}} &= \mean{\pde{\vel}{\timevar} + (\vel \cdot \nabla)\vel} \\
+    &= \pde{\mean{\vel}}{\timevar} + (\mean{\vel} \cdot \nabla) \mean{\vel} + \mean{(\fluct{\vel} \cdot \nabla) \fluct{\vel}} \\
+    &= \matderiv{\mean{\vel}} + \frac{1}{\density} \mean{((\density \fluct{\vel}) \cdot \nabla) \fluct{\vel}} \\
+    &= \matderiv{\mean{\vel}} + \frac{1}{\density} \mean{\nabla \cdot ((\density \fluct{\vel}) \otimes \fluct{\vel})} - \frac{1}{\density} \mean{(\nabla \cdot (\density \fluct{\vel})) \fluct{\vel}} \\
+    &= \matderiv{\mean{\vel}} - \frac{1}{\density} \nabla \cdot \reynoldsstress
+\end{align*}
+
+即:
+\begin{equation}
+    \mean{\matderiv{\vel}} = \matderiv{\mean{\vel}} - \frac{1}{\density} \nabla \cdot \reynoldsstress
+    \label{eq:material_derivative_mean}
+\end{equation}
+
+将所有平均化后的项组合，忽略分子粘性，我们得到\textbf{雷诺平均方程 (RANS)}:
+\begin{equation}
+    \matderiv{\mean{\vel}} = -\coriolis \kvec \times \mean{\vel} -\frac{1}{\density} \nabla \mean{\pressure} + \gravity + \frac{1}{\density} \nabla \cdot \reynoldsstress
+    \label{eq:rans}
+\end{equation}
+
+雷诺应力张量 $\reynoldsstress = -\density \mean{\fluct{\vel} \otimes \fluct{\vel}}$ 的物理本质是\textbf{湍流脉动输运动量的通量}。
+算子 $\nabla \cdot \reynoldsstress$ 计算的是动量通量在空间上的不平衡: 若某处流入的动量多于流出的，$\nabla \cdot \reynoldsstress > \ivec{0}$，该处流体获得净动量增益；反之则损失动量。
+这正是扩散过程的数学特征——通过梯度驱动的输运，使物理量趋于均匀分布。
+在湍流中，虽然微观上是随机脉动，但其统计平均效果等价于一个沿速度梯度的扩散算子，将动量从高浓度区向低浓度区传递，宏观上表现为摩擦，即湍流粘性力 $\tviscosity$。
+
+\subsubsection{湍流半经验理论 (Turbulence Semi-Empirical Theory)}
+
+观察 RANS 方程 \eqref{eq:rans}，我们面临一个数学上的困境: 方程描述了一阶平均量 $\mean{\vel}$ 的演化，但同时引入了二阶脉动相关量 $\reynoldsstress = -\density \mean{\fluct{\vel} \otimes \fluct{\vel}}$。
+未知函数的数量多于方程的数量，方程组是不闭合的。
+这是统计物理中的普遍问题——为描述一阶矩的演化，必须知道二阶矩；若建立二阶矩的方程，又会引入三阶矩。
+这个无限的矩方程链条必须在某处截断。
+这即是\textbf{湍流闭合问题 (Turbulence Closure Problem)}。
+我们必须使用参数化方法，引入额外的物理假设，建立雷诺应力张量 $\reynoldsstress$ 与平均流场 $\mean{\vel}$之间的本构关系，从而使方程组闭合。
+
+设 $\tv$ 是湍流粘性系数，基于Boussinesq的涡粘性假设，雷诺应力张量的闭合形式为:
+\begin{equation}
+    \reynoldsstress = \density \tv (\nabla \mean{\vel} + (\nabla \mean{\vel})^T)
+    \label{eq:reynolds_stress_tensor_closed}
+\end{equation}
+
+考虑到地球流体运动具有极强的各向异性，水平尺度 $\hscale \sim 10^3\,\mathrm{km}$ 远大于垂直尺度 $\vscale \sim 10\,\mathrm{km}$，重力分层强烈地抑制了垂直方向的湍流混合。
+这意味着水平方向和垂直方向的湍流混合效率截然不同。
+因此，我们必须引入各向异性的涡粘系数。
+分别定义\textbf{水平涡粘系数 $\eddyvisch$} 和 \textbf{垂直涡粘系数 $\eddyviscv$}，通常 $\eddyvisch \gg \eddyviscv$。
+雷诺应力张量的闭合形式变为:
+\begin{equation}
+    \reynoldsstress = \density (\eddyvisch (\nabla_h \mean{\vel} + (\nabla_h \mean{\vel})^T) + \eddyviscv (\nabla_z \mean{\vel} + (\nabla_z \mean{\vel})^T))
+    \label{eq:reynolds_stress_tensor_closed_hv}
+\end{equation}
+
+使用\textbf{超声波风速仪}进行实验，测量结果显示:
+\begin{align*}
+    \text{大气:} &\quad \eddyvisch \sim 10^4 \eddyviscv, \quad \eddyviscv \sim 10\,\mathrm{m^2/s} \\
+    \text{海洋:} &\quad \eddyvisch \sim 10^5 \eddyviscv, \quad \eddyviscv \sim 10^{-4} \text{--} 10^{-1}\,\mathrm{m^2/s}
+\end{align*}
+
+$\eddyvisch$ 远大于 $\eddyviscv$，这解释了为什么大尺度地球流体运动在水平方向上更像是二维流体，而在垂直方向上动量交换相对微弱；另外，这也表明海洋内部的垂直混合极弱，分层结构稳定。
+
+涡粘性假设虽然形式简洁，但物理基础并不严密，可靠性尚有疑问。
+尽管如此，由于能够正确反映主要的能量耗散机制，涡粘性假设仍然是目前气候模式中最基础和重要的参数化方案。
+
+为了简化分析，在许多理论模型 (如Ekman层理论) 和粗分辨率数值模式中，我们通常\textbf{假设涡粘系数 $\eddyvisch, \eddyviscv$ 在所考虑的区域内为常数}，且忽略密度的空间变化。
+此时，代入 \eqref{eq:reynolds_stress_tensor_closed_hv}，摩擦项变为拉普拉斯形式:
+\begin{align*}
+    \frac{1}{\density} \nabla \cdot \reynoldsstress &= \nabla \cdot (\eddyvisch (\nabla_h \mean{\vel} + (\nabla_h \mean{\vel})^T) + \eddyviscv (\nabla_z \mean{\vel} + (\nabla_z \mean{\vel})^T)) \\
+    &= \eddyvisch \nabla \cdot (\nabla_h \mean{\vel}) + \eddyviscv \nabla \cdot (\nabla_z \mean{\vel}) + \eddyvisch \nabla_h (\nabla \cdot \mean{\vel}) + \eddyviscv \nabla_z (\nabla \cdot \mean{\vel}) \\
+    &= \eddyvisch \nabla_h^2 \mean{\vel} + \eddyviscv \nabla_z^2 \mean{\vel}
+\end{align*}
+
+我们得到\textbf{闭合的雷诺平均方程}:
+\begin{equation}
+    \matderiv{\mean{\vel}} = -\coriolis \kvec \times \mean{\vel} -\frac{1}{\density} \nabla \mean{\pressure} + \gravity + \eddyvisch \nabla_h^2 \mean{\vel} + \eddyviscv \nabla_z^2 \mean{\vel}
+    \label{eq:rans_closed}
+\end{equation}
+
+\subsubsection{普朗克混合长度理论 (Prandtl Mixing Length Theory)}
+
+为进一步描述涡粘系数 $\eddyvisch$ 和 $\eddyviscv$，Ludwig Prandtl提出了\textbf{混合长度理论}，将湍流微团的运动类比于气体分子的热运动，为涡粘系数提供了半定量的物理依据。
+
+假设湍流场中存在特征尺度——\textbf{混合长度 (Mixing Length)} $\mixinglength$: 流体微团在垂直移动距离 $\mixinglength$ 后才与周围环境混合并交换动量，在此过程中保持自身动量不变。
+
+考虑一个简单的剪切流场，平均速度仅在水平方向且随高度变化: $\mean{\vel} = (\mean{u}(z), 0, 0)$。
+当一个流体微团由于湍流脉动从高度 $z$ 垂直移动到 $z + \Delta z$ 时，其在移动过程中保持原有的速度 $\mean{u}(z)$ 不变。
+当它到达新位置 $z + \Delta z$ 时，其速度与周围环境的平均速度 $\mean{u}(z + \Delta z)$ 存在差异，这个差异即为水平速度脉动 $\fluct{u}$:
+\begin{equation*}
+    \fluct{u} = \mean{u}(z) - \mean{u}(z + \Delta z)
+\end{equation*}
+
+将 $\mean{u}(z + \Delta z)$ 在 $z$ 处进行Taylor展开，忽略高阶项:
+\begin{equation*}
+    \fluct{u} \approx \mean{u}(z) - \left(\mean{u}(z) + \Delta z \pde{\mean{u}}{z}\right) = - \Delta z \pde{\mean{u}}{z}
+\end{equation*}
+
+$\Delta z$ 的量级即为混合长度 $\mixinglength$。
+根据脉动场的连续性方程 \eqref{eq:continuity_reynolds_fluct}，垂直速度脉动 $\fluct{w}$ 的量级与水平速度脉动 $\fluct{u}$ 相当:
+\begin{equation*}
+    \norm{\fluct{w}} \sim \norm{\fluct{u}} \approx \mixinglength \norm{\pde{\mean{u}}{z}}
+\end{equation*}
+
+考虑动量通量的方向性: 若微团向上运动 ($\fluct{w} > 0$，$\Delta z > 0$)，进入流速更快的区域 (设 $\pde{\mean{u}}{z} > 0$)，则 $\fluct{u} < 0$，产生负的动量通量 $\density \fluct{u} \fluct{w} < 0$；若微团向下运动 ($\fluct{w} < 0$，$\Delta z < 0$)，进入流速更慢的区域，则 $\fluct{u} > 0$，同样产生负的动量通量 $\density \fluct{u}\fluct{w} < 0$。
+因此，雷诺应力 $\tau = -\density \mean{\fluct{u}\fluct{w}}$ 可以表示为:
+\begin{equation*}
+    \tau = -\density \mean{\fluct{u}\fluct{w}} = \density \mixinglength^2 \norm{\pde{\mean{u}}{z}} \pde{\mean{u}}{z}
+\end{equation*}
+
+根据涡粘性假设的定义 $\tau = \density \eddyviscv \pde{\mean{u}}{z}$，我们可以得到\textbf{普朗克混合长度公式}:
+\begin{equation}
+    \eddyviscv = \mixinglength^2 \norm{\pde{\mean{u}}{z}}
+    \label{eq:prandtl_mixing_length}
+\end{equation}
+
+该理论将未知的涡粘系数 $\eddyviscv$ 关联到了流场的剪切率 $\norm{\pde{\mean{u}}{z}}$ 和混合长度 $\mixinglength$ 上。
+关于混合长度 $\mixinglength$ 的取值，通常认为在近壁面区域，涡旋尺度受限于到边界的距离，因此假定 $\mixinglength$ 与离壁面的距离 $z$ 成正比: $\mixinglength = \kappa z$。
+其中 $\kappa \approx 0.4$ 被称为\textbf{冯·卡门常数 (von Kármán Constant)}。
+
+\subsection{Ekman层 (Ekman Layer)}
+
+\textbf{Ekman层}是地球流体动力学中最经典的边界层结构之一，描述了\textbf{摩擦力}、\textbf{科里奥利力}和\textbf{压力梯度力}三者平衡时的流动特征。
+它最初由瑞典海洋学家Vagn Walfrid Ekman提出，以解释挪威探险家Fridtjof Nansen在北极考察中观测到的现象: 在北半球，海冰的漂移方向位于风向右侧 $20^\circ \text{--} 45^\circ$ 处。
+
+Ekman的理论揭示了旋转流体中边界层的基本结构:
+\begin{itemize}
+    \item 在边界附近，摩擦力与科里奥利力达到平衡，形成厚度为 $O(\sqrt{\eddyviscv/\coriolis})$ 的薄层。
+    \item 流动方向随高度旋转，形成特征的\textbf{Ekman螺线}。
+    \item 边界层内的输运与边界流方向垂直，产生\textbf{Ekman输运 (Ekman Transport)}，是驱动大洋垂直环流的关键机制。
+\end{itemize}
+
+\subsubsection{Ekman平衡方程 (Equations of Ekman Balance)}
+
+考虑北半球一个水平无限延伸的旋转流体系统。
+在垂直方向上，$z = 0$ 为刚性边界 (如海底或地表)；$z \to \infty$ 为远离边界的区域 (如自由大气或深海)，有速度为 $\mean{\vel_h}$ 的水平均匀运动。
+称边界面附近摩擦起作用的流体层为\textbf{摩擦层 (Friction Layer)}。
+我们通过添加上标 $\star$ 来表示摩擦层内的物理量，如: $\flayer{\vel}, \flayer{\pressure}$。
+
+边界条件为:
+\begin{itemize}
+    \item \textbf{上边界 ($z \to \infty$)}:
+    摩擦作用消失，流体趋于地转平衡状态:
+    \begin{equation}
+        \flayer{\vel} = \mean{\vel_h}
+        \label{eq:ekman_boundary_condition_top}
+    \end{equation}
+
+    \item \textbf{下边界 ($z = 0$)}，流体在刚性边界上满足无滑移条件:
+    \begin{equation}
+        \flayer{\vel} = \ivec{0}
+        \label{eq:ekman_boundary_condition_bottom}
+    \end{equation}
+\end{itemize}
+
+引入以下假设:
+\begin{enumerate}
+    \item \textbf{稳态}: 所有物理量不随时间变化。
+
+    \item \textbf{水平均匀性}: 速度场仅依赖于垂直坐标 $z$，即:
+    \begin{equation}
+        \flayer{\vel} = \flayer{\vel}(z)
+        \label{eq:ekman_horizontal_homogeneity}
+    \end{equation}
+
+    \item \textbf{密度均匀且不可压缩}: 连续性方程简化为不可压缩条件 $\nabla \cdot \flayer{\vel} = 0$。
+    根据 \eqref{eq:ekman_horizontal_homogeneity}，$\pde{\flayer{w}}{z} = 0$。
+    结合边界条件，推知垂直速度 $\flayer{w}$ 恒等于零。
+
+    \item \textbf{科里奥利参数不变}: 在摩擦层尺度内纬度变化可以忽略，设科里奥利参数 $\coriolis$ 为常数。
+\end{enumerate}
+
+在上述假设下，雷诺平均方程 \eqref{eq:rans_closed} 简化为:
+\begin{align}
+    -\coriolis \kvec \times \flayer{\vel_h} - \frac{1}{\density} \nabla_h \flayer{\pressure} + \eddyviscv \nabla_z^2 \flayer{\vel_h} &= 0 \label{eq:ekman_momentum} \\
+    -\frac{1}{\density} \pde{\flayer{\pressure}}{z} - \gravityconst &= 0 \label{eq:ekman_hydrostatic}
+\end{align}
+
+其中 \eqref{eq:ekman_hydrostatic} 表明垂直方向满足静力平衡。
+这意味着摩擦层内的水平压力梯度不随高度变化:
+\begin{equation}
+    \pde{\nabla_h \flayer{\pressure}}{z} = \ivec{0}
+    \label{eq:ekman_pressure_gradient_constant}
+\end{equation}
+
+根据上边界条件 \eqref{eq:ekman_boundary_condition_top}，当 $z \to \infty$ 时，摩擦作用消失，流体处于地转平衡状态:
+\begin{equation}
+    -\frac{1}{\density} \nabla_h \flayer{\pressure} = \coriolis \kvec \times \mean{\vel_h}
+    \label{eq:ekman_top_pressure_gradient}
+\end{equation}
+
+由于 \eqref{eq:ekman_pressure_gradient_constant}，事实上 \eqref{eq:ekman_top_pressure_gradient} 适用于整个摩擦层。
+因此，摩擦层内的水平压力梯度只与远离边界的 $\mean{\vel_h}$ 决定。
+
+将 \eqref{eq:ekman_top_pressure_gradient} 代入 \eqref{eq:ekman_momentum}，得到\textbf{Ekman平衡方程}:
+\begin{equation}
+    \eddyviscv \nabla_z^2 \flayer{\vel_h} - \coriolis \kvec \times \flayer{\vel_h} = -\coriolis \kvec \times \mean{\vel_h}
+    \label{eq:ekman_equation}
+\end{equation}
+
+\subsubsection{Ekman螺线 (Ekman Spiral)}
+
+为简化二维矢量方程的求解过程，我们引入\textbf{复变量}，用 $\complex{\cdot}$ 表示。
+以速度场 $\vel_h$ 为例，定义复速度为 $\complex{\vel_h} = u + i v$。
+
+方程 \eqref{eq:ekman_equation} 的形式变为:
+\begin{equation}
+    \eddyviscv \ode[2]{\complex{\flayer{\vel_h}}}{z} - i \coriolis \complex{\flayer{\vel_h}} = -i \coriolis \complex{\mean{\vel_h}}
+    \label{eq:ekman_ode}
+\end{equation}
+
+定义\textbf{Ekman深度 (Ekman Depth)} $\ekmandepth = \sqrt{\frac{2\eddyviscv}{\coriolis}}$，方程 \eqref{eq:ekman_ode} 的通解形式为:
+\begin{equation*}
+    \complex{\flayer{\vel_h}} = \complex{\mean{\vel_h}} + C_1 e^{\frac{1+i}{\ekmandepth} z} + C_2 e^{-\frac{1+i}{\ekmandepth} z}
+\end{equation*}
+
+利用边界条件确定积分常数:
+\begin{itemize}
+    \item \textbf{上边界 ($z \to \infty$)}: 要求 $\complex{\flayer{\vel_h}} = \complex{\mean{\vel_h}}$。
+    这要求 $C_1 = 0$。
+    解的形式简化为 $\complex{\flayer{\vel_h}} = \complex{\mean{\vel_h}} + C_2 e^{-\frac{1+i}{\ekmandepth} z}$。
+
+    \item \textbf{下边界 ($z = 0$)}: 要求 $\complex{\flayer{\vel_h}}(0) = 0$。
+    代入得到 $C_2 = -\complex{\mean{\vel_h}}$。
+\end{itemize}
+
+综上，复速度的解析解为:
+\begin{equation}
+    \complex{\flayer{\vel_h}}(z) = \complex{\mean{\vel_h}} \left(1 - e^{-\frac{1+i}{\ekmandepth} z}\right)
+    \label{eq:ekman_solution_complex}
+\end{equation}
+
+对应的矢量形式:
+\begin{equation}
+    \flayer{\vel_h}(z) = \mean{\vel_h} (1 - e^{-z / \ekmandepth} \cos(z / \ekmandepth)) + (\kvec \times \mean{\vel_h}) e^{-z / \ekmandepth} \sin(z / \ekmandepth)
+    \label{eq:ekman_solution}
+\end{equation}
+
+上述解析解揭示了Ekman层内速度场垂直分布的经典结构——\textbf{Ekman螺线}。
+我们以大气风场为例进行说明:
+\begin{enumerate}
+    \item \textbf{风速随高度的变化}:
+        在地面 ($z=0$)，风速为零。
+        随着高度 $z$ 的增加，风速矢量的大小逐渐增大，并趋近于地转风速。
+        当 $z \to \infty$ 时，$\flayer{\vel_h} = \mean{\vel_h}$，即恢复到无粘的地转平衡状态。
+
+    \item \textbf{风向随高度的偏转}:
+        将复速度解 \eqref{eq:ekman_solution_complex} 在 $z \to 0$ 处作Taylor展开:
+        \begin{equation*}
+            \complex{\flayer{\vel_h}} \approx \complex{\mean{\vel_h}} \left[1 - \left(1 - \frac{1+i}{\ekmandepth} z \right)\right] = \complex{\mean{\vel_h}} \frac{z}{\ekmandepth} (1+i) = \sqrt{2} \frac{z}{\ekmandepth} \complex{\mean{\vel_h}} e^{i \pi/4}
+        \end{equation*}
+
+        这说明受摩擦力拖曳，近地面风向不再平行于等压线，而是穿过等压线指向低压区 (在北半球相对于地转风逆时针偏转)。
+        理论上当 $z \to 0$ 时，风矢量与地转风矢量的夹角恰为 $45^\circ$。
+        随着高度 $z$ 的增加，摩擦效应逐渐减弱，风矢量在北半球呈顺时针旋转。
+\end{enumerate}
+
+Ekman深度 $\ekmandepth$ 是衡量摩擦层厚度的特征尺度。
+物理上，它代表了粘性力与科里奥利力量级相当的深度。
+根据解的指数衰减特性，当高度达到 $z = \pi \ekmandepth$ 时，摩擦引起的扰动速度 $(\flayer{\vel_h} - \mean{\vel_h})$ 衰减为地面的 $e^{-\pi} \approx 4\%$，且此时风向恰好再次平行于地转风方向 (但在数值上略小于地转风)。
+因此，\textbf{通常将 $z = \pi \ekmandepth$ 视为Ekman层的顶端}。
+
+Ekman深度的具体数值取决于流体的湍流混合强度和所处的纬度。
+在大气边界内，湍流混合较强，典型的涡粘系数 $\eddyviscv \sim 10\,\mathrm{m^2/s}$，在中纬度地区对应的Ekman层厚度约为 $500 \text{--} 1000\,\mathrm{m}$。
+相比之下，海洋中的湍流混合较弱，$\eddyviscv \sim 10^{-2}\,\mathrm{m^2/s}$，因此海洋Ekman层要薄得多，通常仅为 $10 \text{--} 50\,\mathrm{m}$。
+这解释了为什么大气摩擦层可以覆盖复杂的地形，而海洋摩擦层仅限于表层。
+
+Ekman层理论最重要的动力学推论在于边界层内的质量输运。
+我们定义\textbf{Ekman输运} $\ekmantransport$ 为边界层内扰动速度的垂直积分。
+利用复速度解 \eqref{eq:ekman_solution_complex}:
+\begin{equation*}
+    \complex{\ekmantransport} = \int_0^\infty (\complex{\flayer{\vel_h}} - \complex{\mean{\vel_h}}) \dd{z} = \int_0^\infty -\complex{\mean{\vel_h}} e^{-\frac{1+i}{\ekmandepth} z} \dd{z} = -\complex{\mean{\vel_h}} \left.\left(-\frac{\ekmandepth}{1+i} e^{-\frac{1+i}{\ekmandepth} z}\right)\right|_0^\infty = -\frac{\ekmandepth}{1+i} \complex{\mean{\vel_h}}
+\end{equation*}
+
+矢量形式为:
+\begin{equation}
+    \ekmantransport = \frac{\ekmandepth}{2} (-\mean{\vel_h} + \kvec \times \mean{\vel_h})
+    \label{eq:ekman_transport_vector}
+\end{equation}
+
+为了理解其物理含义，我们考虑地表摩擦应力 $\wind_0$。
+根据牛顿内摩擦定律:
+\begin{equation*}
+    \complex{\wind_0} = \density \eddyviscv \left.\pde{\complex{\flayer{\vel_h}}}{z}\right|_{z=0} = \density \eddyviscv \complex{\mean{\vel_h}} \left(\frac{1+i}{\ekmandepth}\right)
+\end{equation*}
+
+根据关系式 $\ekmandepth^2 = 2\eddyviscv/\coriolis$，对比 $\ekmantransport$ 和 $\wind_0$ 的表达式，注意到两者间的代数关系:
+\begin{equation*}
+    \complex{\ekmantransport} = i \frac{\complex{\wind_0}}{\density \coriolis}
+\end{equation*}
+
+回到矢量形式，我们得到著名的\textbf{Ekman输运公式}:
+\begin{equation}
+    \ekmantransport = \frac{1}{\density \coriolis} \kvec \times \wind_0
+    \label{eq:ekman_transport}
+\end{equation}
+
+这一结果揭示了Ekman输运的本质特征:
+\begin{enumerate}
+    \item \textbf{方向性}: 净质量输运方向垂直于地表摩擦应力 $\wind_0$ 的方向，在北半球相对于应力逆时针旋转。
+    更具体地，在北半球，若假定地转风 $\mean{\vel_h}$ 指向正北方向 ($0^\circ$)，则地表摩擦应力 $\wind_0$ 指向西北方向 ($+45^\circ$)。
+    因此，Ekman输运指向地转风的西南方 ($+135^\circ$)，向着低压一侧产生跨等压线的质量辐合或辐散。
+    \item \textbf{普适性}: 总输运量仅取决于表面应力和科里奥利参数，而与涡粘系数 $\eddyviscv$ 的具体形式无关。
+\end{enumerate}
+
+这种跨等压线的质量输运具有极重要的动力学意义。
+在大气中，指向低压区的Ekman输运会填充气旋中心，导致气旋减弱；在海洋中，风应力驱动的Ekman输运会导致表层海水的辐散或辐聚，进而通过\textbf{Ekman抽吸} 驱动深层大洋环流。
+
+\subsubsection{自由面Ekman层 (Ekman Layer at Free Surface)}
+
+在上一节中，我们讨论了刚性边界附近的Ekman层，现在我们转而考虑海洋表面的情况。
+这是一个\textbf{自由面}，流体受到表面风应力的驱动。
+这正是Nansen观测到海冰漂移现象的动力学背景，也是风生洋流理论的基础。
+
+考虑一个无限深的大洋，海洋表面 (自由面) 位于 $z = 0$。
+海洋位于 $z < 0$ 区域。
+风应力 $\wind$ 作用于海洋表面。
+在远离表面的深海区域 ($z \to -\infty$)，流体以水平均匀速度 $\mean{\vel_h}$ 运动。
+采用同样的假设: 稳态、水平均匀性、密度均匀且不可压缩、科里奥利参数不变。
+
+边界条件为:
+\begin{enumerate}
+    \item \textbf{上边界 ($z = 0$)}: 满足应力连续条件。
+    大气施加于海洋的风应力 $\wind$ 必须等于海洋表面的湍流粘性切应力:
+    \begin{equation}
+        \density \eddyviscv \pde{\flayer{\vel}_h}{z} = \wind
+        \label{eq:ekman_fs_boundary_condition_top}
+    \end{equation}
+
+    \item \textbf{下边界 ($z \to -\infty$)}: 摩擦作用消失。
+    流体趋于地转平衡状态:
+    \begin{equation}
+        \flayer{\vel}_h = \mean{\vel_h}
+        \label{eq:ekman_fs_boundary_condition_bottom}
+    \end{equation}
+\end{enumerate}
+
+通过与上一节类似的推导，雷诺平均方程 \eqref{eq:rans_closed} 简化为相同的Ekman平衡方程 \eqref{eq:ekman_equation}。
+引入复速度，通解形式为 $\complex{\flayer{\vel_h}} = \complex{\mean{\vel_h}} + C_1 e^{\frac{1+i}{\ekmandepth} z} + C_2 e^{-\frac{1+i}{\ekmandepth} z}$。
+
+利用边界条件确定积分常数:
+\begin{itemize}
+    \item \textbf{下边界 ($z \to -\infty$)}: 要求 $\complex{\flayer{\vel_h}} = \complex{\mean{\vel_h}}$。
+    这要求 $C_2 = 0$。
+    解的形式简化为 $\complex{\flayer{\vel_h}} = \complex{\mean{\vel_h}} + C_1 e^{\frac{1+i}{\ekmandepth} z}$。
+
+    \item \textbf{上边界 ($z = 0$)}:
+    \begin{equation*}
+        \density \eddyviscv \left.\pde{\complex{\flayer{\vel_h}}}{z}\right|_{z=0} = \density \eddyviscv C_1 \frac{1+i}{\ekmandepth} = \complex{\wind}
+    \end{equation*}
+
+    解得常数 $C_1 = \frac{\complex{\wind} \ekmandepth}{\density \eddyviscv (1+i)} = \frac{\complex{\wind}}{\density \sqrt{\coriolis \eddyviscv}} \complexexpminus{\pi/4}$。
+\end{itemize}
+
+复速度的解析解为:
+\begin{equation}
+    \complex{\flayer{\vel_h}}(z) = \complex{\mean{\vel_h}} + \frac{\complex{\wind}}{\density \sqrt{\coriolis \eddyviscv}} e^{\frac{z}{\ekmandepth}} \complexexp{\left(\frac{z}{\ekmandepth} - \frac{\pi}{4}\right)}
+    \label{eq:ekman_fs_solution}
+\end{equation}
+
+令 $z = 0$，表面流速为:
+\begin{equation}
+    \complex{\flayer{\vel_h}}(0) = \complex{\mean{\vel_h}} + \frac{\complex{\wind}}{\density \sqrt{\coriolis \eddyviscv}} \complexexpminus{\pi/4}
+    \label{eq:ekman_fs_surface_velocity}
+\end{equation}
+
+这说明表面流速由两部分组成: 深层地转流 $\mean{\vel_h}$ 和风应力驱动的Ekman漂流。
+Ekman漂流的大小与风应力大小成正比，与 $\sqrt{\coriolis \eddyviscv}$ 成反比。
+因子 $\complexexpminus{\pi/4}$ 表示Ekman漂流矢量相对于风应力矢量顺时针偏转 $45^\circ$ (在北半球)。
+在Nansen的实际观测中，冰山漂移方向和风向的夹角略小于 $45^\circ$，这主要是由于海洋湍流的各向异性以及非定常效应的影响，但Ekman层理论抓住了最核心的科里奥利力效应。
+
+随着深度增加 ($z$ 减小，远离 $0$)，指数因子 $e^{z/\ekmandepth}$ 导致Ekman漂流指数衰减，而相位因子 $\complexexp{\left(\frac{z}{\ekmandepth} - \frac{\pi}{4}\right)}$ 导致Ekman漂流矢量继续顺时针旋转。
+这构成了倒置的Ekman螺线。
+当深度达到 $z = -\pi \ekmandepth$ 时，Ekman漂流方向与表面Ekman漂流方向相反，大小衰减为表层的 $e^{-\pi} \approx 4\%$。
+
+最后，计算自由面Ekman层产生的总质量输运 (Ekman输运):
+\begin{equation*}
+    \complex{\ekmantransport} = \int_{-\infty}^0 (\complex{\flayer{\vel_h}} - \complex{\mean{\vel_h}}) \dd{z} = \frac{\complex{\wind}}{\density \sqrt{\coriolis \eddyviscv}} \complexexpminus{\pi/4} \int_{-\infty}^0 e^{\frac{1+i}{\ekmandepth}z} \dd{z} = \frac{\ekmandepth}{1+i} \frac{\complex{\wind}}{\density \sqrt{\coriolis \eddyviscv}} \complexexpminus{\pi/4} = -\frac{i}{\density \coriolis} \complex{\wind}
+\end{equation*}
+
+矢量形式为:
+\begin{equation}
+    \ekmantransport = -\frac{1}{\density \coriolis} \kvec \times \wind
+    \label{eq:ekman_fs_transport}
+\end{equation}
+
+净输运方向垂直于风应力方向，在北半球相对于应力顺时针旋转。
+自由面Ekman层内的输运同样不依赖于涡粘系数 $\eddyviscv$ 的具体形式，是旋转流体风生环流中最稳健的动力学特征。
+
+\begin{insightbox}[Ekman层的物理和气候意义]
+    Ekman层理论是地球流体动力学中最成功的理论之一。
+    它揭示了旋转流体边界层的动力学结构，是连接大气与海洋、驱动气候系统的关键。
+    \begin{enumerate}
+        \item \textbf{大洋环流的驱动机制 (Ekman Pumping)}: 表面Ekman输运是风应力驱动大洋环流的直接机制。
+        例如，在副热带海区，西风带 (向赤道输运) 与信风带 (向极地输运) 产生的Ekman输运发生辐合，通过Ekman抽吸形成下沉流，从而压低温跃层，维持副热带反气旋式环流。
+        \item \textbf{沿岸与赤道上升流 (Upwelling)}: 在特定风场驱动下 (如沿岸平行风或赤道东风)，Ekman输运的辐散导致深层富含营养盐的冷海水上涌。
+        这不仅支撑了全球主要的渔场 (如秘鲁、加利福尼亚上升流系)，还通过海气热交换显著影响局地气候。
+        \item \textbf{旋转流体的自旋减弱 (Spin-down)}: 底部Ekman层通过摩擦作用耗散地转流的动能，并通过边界层吸力将边界效应传递至流体内部，是旋转流体系统趋于静止和实现垂直耦合的关键机制。
+        \item \textbf{湍流参数化的范例}: Ekman层理论展示了如何基于涡粘性假设解析复杂的湍流边界层问题，为更复杂的湍流闭合方案奠定了理论基础。
+    \end{enumerate}
+
+    然而，作为一种理想化的理论模型，Ekman层理论也存在明显的局限性:
+    \begin{itemize}
+        \item \textbf{涡粘系数的常数假设}: 假设 $\eddyviscv$ 为常数过于简化。
+        实际上，湍流混合强度随流体剪切、分层稳定度 (Richardson数) 及距离边界的距离剧烈变化。
+        \item \textbf{忽略非定常与非均匀效应}: 经典的Ekman解基于稳态和水平均匀假设，无法描述惯性振荡、海陆边界附近的非线性效应以及快速变化的瞬变过程。
+        \item \textbf{浅水与强分层限制}: 在浅水区或强分层 (如温跃层) 区域，Ekman层的结构会受到显著修正，简单的涡粘性模型可能失效。
+    \end{itemize}
+
+    现代海洋模式中，Ekman层理论的思想仍然广泛应用，但通常会结合更复杂的湍流闭合方案 (如K-Profile Parameterization, KPP) 和高分辨率数值模拟。
+\end{insightbox}

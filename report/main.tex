@@ -1,0 +1,208 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+\PassOptionsToPackage{numbers, compress}{natbib}
+% before loading codl_2025
+
+% The authors should use one of these tracks.
+% Before accepting by the CoDL conference, select one of the options below.
+% 0. "default" for submission
+% \usepackage{codl_2025}
+% the "default" option is equal to the "main" option, which is used for the Main Track with double-blind reviewing.
+% 1. "main" option is used for the Main Track
+% \usepackage[main]{codl_2025}
+% 2. "position" option is used for the Position Paper Track
+% \usepackage[position]{codl_2025}
+% 3. "dandb" option is used for the Datasets & Benchmarks Track
+% \usepackage[dandb]{codl_2025}
+% 4. "creativeai" option is used for the Creative AI Track
+% \usepackage[creativeai]{codl_2025}
+% 5. "sglblindworkshop" option is used for the Workshop with single-blind reviewing
+% \usepackage[sglblindworkshop]{codl_2025}
+% 6. "dblblindworkshop" option is used for the Workshop with double-blind reviewing
+% \usepackage[dblblindworkshop]{codl_2025}
+
+% After being accepted, the authors should add "final" behind the track to compile a camera-ready version.
+% 1. Main Track
+% \usepackage[main, final]{codl_2025}
+% 2. Position Paper Track
+% \usepackage[position, final]{codl_2025}
+% 3. Datasets & Benchmarks Track
+% \usepackage[dandb, final]{codl_2025}
+% 4. Creative AI Track
+% \usepackage[creativeai, final]{codl_2025}
+% 5. Workshop with single-blind reviewing
+% \usepackage[sglblindworkshop, final]{codl_2025}
+% 6. Workshop with double-blind reviewing
+% \usepackage[dblblindworkshop, final]{codl_2025}
+% Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote.
+% For workshops (5., 6.), the authors should add the name of the workshop, "\workshoptitle" command is used to set the workshop title.
+% \workshoptitle{WORKSHOP TITLE}
+
+% "preprint" option is used for arXiv or other preprint submissions
+\usepackage[preprint]{codl_2025}
+
+% to avoid loading the natbib package, add option nonatbib:
+% \usepackage[nonatbib]{codl_2025}
+
+\usepackage{xeCJK}
+\usepackage{setspace}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+% Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote.
+\title{赤道波动力学的算子代数框架 \vspace{0.25em} \\ Operator Algebraic Framework for \\ Equatorial Wave Dynamics}
+
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+  余卓然\thanks{所有作者对本文有同等贡献。} \\
+  Department of Earth System Science \\
+  Tsinghua University \\
+  Beijing, 100084 \\
+  \texttt{yuzr21@mails.tsinghua.edu.cn} \\
+  % examples of more authors
+  \And
+  辛承烨\footnotemark[1] \\
+  Department of Earth System Science \\
+  Tsinghua University \\
+  Beijing, 100084 \\
+  \texttt{xin-cy25@mails.tsinghua.edu.cn} \\
+  \AND
+  刘滨瑞\footnotemark[1] \\
+  Department of Earth System Science \\
+  Tsinghua University \\
+  Beijing, 100084 \\
+  \texttt{lbr21@mails.tsinghua.edu.cn} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+
+
+\input{commands.tex}
+
+
+
+\begin{document}
+
+
+
+\maketitle
+\setstretch{1.5}
+
+
+
+\begin{abstract}
+  赤道波动主导着热带大气的天气与气候变率，但对流与动力学过程的耦合机制至今仍未被完全理解。
+  本文建立了一个统一的数学框架来描述赤道波动力学：从三维层结大气的原始方程出发，利用 Sturm-Liouville 理论实现垂直与水平结构的严格分离，并通过算子代数方法将水平结构方程转化为类量子谐振子问题。
+  我们证明，解空间可由三个量子数完全刻画——垂直模态指数决定等效深度，经向模态指数决定波动类型，纬向波数决定传播特性——从而将 Kelvin 波、Rossby 波及惯性重力波等经典模态纳入同一理论体系。
+  在干大气极限下，该框架精确复现了 Matsuno 色散关系；引入 Wave-CISK 参数化后，非绝热加热等效于降低大气的有效静力稳定度，使波速减小为干波值的 $\sqrt{1-\moistparam}$ 倍，与观测到的对流耦合赤道波慢传播特性定量一致。
+  我们进一步发展了微扰理论，将湿过程视为对干波系统的扰动，推导了频率修正与模态混合的解析表达式，揭示了加热的空间对称性如何决定不同经向模态之间的耦合选择定则。
+  这一理论框架不仅为解释热带大气中从平流层干波到对流层对流耦合波的连续谱提供了坚实基础，也为改进数值模式中的热带波动参数化指明了方向。
+\end{abstract}
+
+
+
+\input{chap01.tex}
+
+
+
+\input{chap02.tex}
+
+
+
+\input{chap03.tex}
+
+
+
+\input{chap04.tex}
+
+
+
+\input{chap05.tex}
+
+
+
+\begin{ack}
+作者感谢罗勇老师在《地球物理流体动力学》课程中的授课与悉心指导，感谢杨慧迪助教在课程学习过程中给予的帮助与支持。
+
+本研究未获得任何基金或项目资助，作者声明不存在利益冲突。
+\end{ack}
+
+
+
+\begin{authcontrib}
+余卓然负责前期调研与文献综述。余卓然与刘滨瑞共同设计了论文整体框架。刘滨瑞构建了数学形式体系。辛承烨撰写了第~\ref{sec:introduction}~节与第~\ref{sec:framework}~节。余卓然撰写了第~\ref{sec:waves}~节与第~\ref{sec:conclusion}~节。刘滨瑞撰写了第~\ref{sec:perturbation}~节并完成全文统稿与润色。所有作者均参与了论文的审阅与修改。
+\end{authcontrib}
+
+
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\section{Sturm-Liouville 理论概要}
+\label{app:sturm_liouville}
+
+本附录简要介绍 Sturm-Liouville 理论的基本结果，这些结果为第 \ref{sec:framework} 节中垂直本征值问题的分析提供了数学基础。
+
+考虑 Sturm-Liouville 型微分算子：
+\begin{equation}
+    \mathcal{L}[y] = \frac{1}{r(z)}\left[-\pde{}{z}\left(p(z)\pde{y}{z}\right) + q(z)y\right]
+\end{equation}
+其中 $p(z) > 0$，$r(z) > 0$ 且 $q(z)$ 为定义在区间 $[a, b]$ 上的连续函数。对于第 \ref{sec:framework} 节中的垂直结构算子 $\vertop$，相应的系数为 $p(z) = \density_0/\bvfreq^2$，$r(z) = \density_0$，$q(z) = 0$。
+
+定义加权内积：
+\begin{equation}
+    \langle f, g \rangle \equiv \int_a^b f(z)\, g(z)\, r(z)\, \mathrm{d}z
+\end{equation}
+
+在适当的边界条件下（如 Dirichlet 边界条件 $y(a) = y(b) = 0$，或 Neumann 边界条件 $y'(a) = y'(b) = 0$），Sturm-Liouville 理论给出以下核心结论：
+
+（1）自伴性：算子 $\mathcal{L}$ 关于上述内积是自伴的，即 $\langle f, \mathcal{L}g \rangle = \langle \mathcal{L}f, g \rangle$。这一性质可通过分部积分并利用边界条件使边界项消失来验证。
+
+（2）本征值的实性与可数性：$\mathcal{L}$ 的所有本征值 $\lambda_n$ 均为实数，且可按大小排列为递增序列 $\lambda_0 < \lambda_1 < \lambda_2 < \cdots \to \infty$。
+
+（3）本征函数的正交性：对应于不同本征值的本征函数相互正交，即若 $\mathcal{L}\phi_m = \lambda_m \phi_m$ 且 $\mathcal{L}\phi_n = \lambda_n \phi_n$ 且 $\lambda_m \neq \lambda_n$，则 $\langle \phi_m, \phi_n \rangle = 0$。
+
+（4）完备性：本征函数系 $\{\phi_n(z)\}_{n=0}^\infty$ 在空间 $L^2([a, b], r\,\mathrm{d}z)$ 中构成完备正交基。任何满足边界条件的平方可积函数 $f(z)$ 都可以唯一地展开为：
+\begin{equation}
+    f(z) = \sum_{n=0}^{\infty} c_n \phi_n(z), \quad c_n = \frac{\langle f, \phi_n \rangle}{\langle \phi_n, \phi_n \rangle}
+\end{equation}
+
+这些结果保证了第 \ref{sec:framework} 节中垂直模态分解的数学合理性：等效深度 $\eqdepth_\vertmode$ 作为本征值是良定义的，垂直结构函数 $\vertfunc_\vertmode(z)$ 构成完备正交基，任意物理场可唯一地分解为不同垂直模态的叠加。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\end{document}

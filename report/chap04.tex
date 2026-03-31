@@ -1,0 +1,391 @@
+\section{微扰理论分析}
+\label{sec:perturbation}
+
+在前两节中，我们建立了描述赤道波动的统一数学框架，并在干大气与简单湿参数化条件下求解了本征模态结构。
+然而，真实热带大气远比理想化模型复杂：非绝热加热的垂直结构与波动场未必完全匹配，背景流场存在经向切变，加热与动力学之间可能存在相位延迟。
+为严谨地处理这些复杂因素，本节将引入量子力学中的微扰理论，将赤道波动系统形式化为算子本征值问题，并将上述复杂物理过程视为作用在干大气本征态上的微扰。
+这一方法不仅能够定量计算频率修正和增长率，还能揭示不同模态之间的耦合机制，为理解对流耦合赤道波的复杂结构提供新的理论视角。
+
+\subsection{赤道波动的算子本征值问题}
+\label{subsec:operator_eigenvalue}
+
+为应用微扰理论，首先需要将第 \ref{sec:framework} 节的赤道波动方程组重新表述为标准的算子本征值问题。
+回顾无量纲化后的线性方程组 \eqref{eq:spectral_u}--\eqref{eq:spectral_phi}，引入态矢量：
+\begin{equation}
+    \ivec{\Psi} \equiv \begin{pmatrix} \complexamp{u} \\ \complexamp{v} \\ \complexamp{\gravpotential} \end{pmatrix}
+    \label{eq:state_vector}
+\end{equation}
+
+则干大气情形下的谱方程可写为紧凑的矩阵形式：
+\begin{equation}
+    \Hop_0 \ivec{\Psi} = \frequency \ivec{\Psi}
+    \label{eq:eigenvalue_problem}
+\end{equation}
+
+其中 $\Hop_0$ 为干大气动力学算子，作用于态矢量 $\ivec{\Psi}$ 的具体形式为：
+\begin{equation}
+    \Hop_0 = \begin{pmatrix}
+        0 & -\ii y & -\wavenum \\
+        \ii y & 0 & \ii\partial_y \\
+        -\wavenum & \ii\partial_y & 0
+    \end{pmatrix}
+    \label{eq:dry_hamiltonian}
+\end{equation}
+
+该算子形式与量子力学中的哈密顿量具有深刻的结构类比：$y$ 坐标在方程中扮演的角色类似于谐振子势阱，而 $\partial_y$ 则对应动量算子。
+正是这种数学结构使得赤道波动的本征函数由厄米函数族描述，如式 \eqref{eq:hermite_functions} 所示。
+
+我们需要在态空间上定义适当的内积结构。
+物理上，内积应当与系统的某种守恒量相关联。
+对于赤道波动系统，自然的选择是扰动能量密度。
+定义加权内积：
+\begin{equation}
+    \langle \ivec{\Psi}_a, \ivec{\Psi}_b \rangle \equiv \int_{-\infty}^{\infty} \left( \complexamp{u}_a^* \complexamp{u}_b + \complexamp{v}_a^* \complexamp{v}_b + \complexamp{\gravpotential}_a^* \complexamp{\gravpotential}_b \right) \dd{y}
+    \label{eq:inner_product_horizontal}
+\end{equation}
+
+在此内积空间中，干大气算子 $\Hop_0$ 的自伴性可通过分部积分直接验证。
+根据 Sturm-Liouville 理论，$\Hop_0$ 的本征值（即频率 $\frequency$）均为实数，对应的本征函数族构成完备正交基。
+这一性质是第 \ref{subsec:matsuno_dispersion} 小节中 Matsuno 色散关系所蕴含的，也是后续微扰展开收敛性的数学保证。
+
+利用第 \ref{subsec:operator_algebra} 小节引入的梯算子，还可以将算子本征值问题进一步代数化。
+经向速度 $\complexamp{v}$ 的本征方程 \eqref{eq:algebraic_dispersion} 可改写为：
+\begin{equation}
+    \left[ \frac{\aop\adop}{\frequency - \wavenum} + \frac{\adop\aop}{\frequency + \wavenum} \right] \complexamp{v} = \frequency \complexamp{v}
+    \label{eq:v_operator_eigen}
+\end{equation}
+
+上式左侧的算子结构清楚地展示了赤道 $\beta$ 效应与重力波传播之间的相互作用：分母中的 $\frequency \mp \wavenum$ 分别对应东传与西传重力波的多普勒频移，而分子中的梯算子则描述了科氏力随纬度变化所引起的模态耦合。
+
+\subsection{频率的微扰展开}
+\label{subsec:frequency_perturbation}
+
+现在考虑在干大气基础上引入微扰的情形。
+设总算子为：
+\begin{equation}
+    \Hop = \Hop_0 + \epsilon \Vop
+    \label{eq:perturbed_operator}
+\end{equation}
+
+其中 $\Hop_0$ 为干大气算子，$\Vop$ 表示微扰算子，$\epsilon$ 为标识微扰强度的小参数。
+在赤道波动问题中，$\Vop$ 可以代表多种物理效应：非绝热加热的复杂垂直结构、加热与波动场之间的相位延迟、背景经向风切变，地形强迫效应等。
+
+将本征频率与本征函数按 $\epsilon$ 的幂次展开：
+\begin{align}
+    \frequency &= \frequency^{(0)} + \epsilon \frequency^{(1)} + \epsilon^2 \frequency^{(2)} + \order{\epsilon^3} \label{eq:frequency_expansion} \\
+    \ivec{\Psi} &= \ivec{\Psi}^{(0)} + \epsilon \ivec{\Psi}^{(1)} + \epsilon^2 \ivec{\Psi}^{(2)} + \order{\epsilon^3} \label{eq:state_expansion}
+\end{align}
+
+其中零阶量 $\frequency^{(0)}$ 与 $\ivec{\Psi}^{(0)}$ 分别为干大气的本征频率与本征态，满足 Matsuno 色散关系 \eqref{eq:matsuno_dispersion} 及相应的经向结构 \eqref{eq:u_meridional}--\eqref{eq:phi_meridional}。
+将展开式代入本征方程 $\Hop \ivec{\Psi} = \frequency \ivec{\Psi}$，按 $\epsilon$ 的各阶幂次比较系数。
+零阶方程即为干大气情形下的理论结果。
+一阶方程为：
+\begin{equation}
+    \Hop_0 \ivec{\Psi}^{(1)} + \Vop \ivec{\Psi}^{(0)} = \frequency^{(0)} \ivec{\Psi}^{(1)} + \frequency^{(1)} \ivec{\Psi}^{(0)}
+    \label{eq:first_order_eq}
+\end{equation}
+
+取上式与零阶本征态 $\ivec{\Psi}^{(0)}$ 的内积，并利用 $\Hop_0$ 的自伴性，可得一阶频率修正的显式表达：
+\begin{equation}
+    \frequency^{(1)} = \frac{\langle \ivec{\Psi}^{(0)}, \Vop \ivec{\Psi}^{(0)} \rangle}{\langle \ivec{\Psi}^{(0)}, \ivec{\Psi}^{(0)} \rangle}
+    \label{eq:first_order_correction}
+\end{equation}
+
+上式的物理意义为：一阶频率修正等于微扰算子在未扰动态上的期望值。
+若本征态已归一化（$\langle \ivec{\Psi}^{(0)}, \ivec{\Psi}^{(0)} \rangle = 1$），则：
+\begin{equation}
+    \frequency^{(1)} = \langle \ivec{\Psi}^{(0)} | \Vop | \ivec{\Psi}^{(0)} \rangle
+    \label{eq:first_order_simple}
+\end{equation}
+
+频率修正的符号与大小完全由微扰算子 $\Vop$ 的具体形式以及零阶态的空间结构共同决定。
+
+类似地，继续展开得到二阶修正。
+二阶频率修正涉及所有其他本征态的贡献：
+\begin{equation}
+    \frequency^{(2)} = \sum_{m \neq n} \frac{\abs{\langle \ivec{\Psi}_m^{(0)} | \Vop | \ivec{\Psi}_n^{(0)} \rangle}^2}{\frequency_n^{(0)} - \frequency_m^{(0)}}
+    \label{eq:second_order_correction}
+\end{equation}
+
+其中求和遍历所有与目标态 $n$ 不同的本征态 $m$。
+分母中出现的频率差 $\frequency_n^{(0)} - \frequency_m^{(0)}$ 表明：当两个态的零阶频率接近时，二阶修正将显著增大，这预示着简并或近简并情形需要特殊处理。
+
+\subsection{非绝热加热的微扰效应}
+\label{subsec:heating_perturbation}
+
+我们将微扰理论应用于非绝热加热问题，定量分析加热如何修正赤道波动的频率与结构。
+
+首先考虑第 \ref{subsec:heating_effect} 小节讨论的 Wave-CISK 参数化。
+在该参数化下，加热效应等价于将 Brunt-Vaisala 频率替换为有效值 $\bvfreq_{\mathrm{eff}} = \sqrt{1-\moistparam}\,\bvfreq$。
+从微扰论的视角，这相当于在谐振子势阱中引入修正：
+\begin{equation}
+    \Hop = \Hop_0 + \Vop, \quad \Vop = -\frac{\moistparam}{2} y^2
+    \label{eq:wave_cisk_perturbation}
+\end{equation}
+
+其中 $\moistparam$ 作为小参数扮演 $\epsilon$ 的角色。
+负号表明加热降低了有效势阱的深度，使波动更易于在经向上扩展。
+
+为计算一阶频率修正，需要求微扰算子在厄米函数上的矩阵元。
+利用梯算子表示 $y = (\aop + \adop)/\sqrt{2}$，可得：
+\begin{equation}
+    y^2 = \frac{1}{2}(\aop + \adop)^2 = \frac{1}{2}(\aop\aop + \adop\adop + 2\Nop + 1)
+\end{equation}
+
+对角矩阵元为：
+\begin{equation}
+    \langle \hfunc{\modenum} | y^2 | \hfunc{\modenum} \rangle = \int_{-\infty}^{\infty} y^2 \abs{\hfunc{\modenum}(y)}^2 \dd{y} = \modenum + \frac{1}{2}
+    \label{eq:y2_diagonal}
+\end{equation}
+
+该结果可由梯算子的代数性质直接推得：$\aop\aop$ 和 $\adop\adop$ 的贡献在正交归一条件下消失，仅 $\Nop + 1/2$ 给出非零贡献。
+
+将式 \eqref{eq:y2_diagonal} 代入一阶修正公式 \eqref{eq:first_order_simple}：
+\begin{equation}
+    \frequency^{(1)}_\modenum = -\frac{\moistparam}{2} \left( \modenum + \frac{1}{2} \right)
+    \label{eq:first_order_wave_cisk}
+\end{equation}
+
+由于干大气谐振子的本征值也正比于 $\modenum + 1/2$，上式表明一阶修正与零阶频率成正比。
+事实上，对于 Wave-CISK 型微扰，精确的修正因子可以通过解析计算给出。
+由式 \eqref{eq:frequency_rescaling}：
+\begin{equation}
+    \frequency = \sqrt{1 - \moistparam} \cdot \frequency^{(0)}
+\end{equation}
+
+利用泰勒展开 $\sqrt{1-\moistparam} = 1 - \moistparam/2 - \moistparam^2/8 + \order{\moistparam^3}$，可得：
+\begin{equation}
+    \frequency^{(1)} = -\frac{1}{2} \frequency^{(0)}, \quad \frequency^{(2)} = -\frac{1}{8} \frequency^{(0)}
+    \label{eq:wave_cisk_corrections}
+\end{equation}
+
+上述结果与微扰论计算完全一致，验证了方法的自洽性。
+更重要的是，这一分析揭示了 Wave-CISK 参数化的代数特征：由于加热与波动场之间的简单比例关系，所有模态的频率按相同因子降低，色散关系的形式保持不变。
+
+现在考虑更一般的加热形式。
+若非绝热加热的垂直结构与波动场存在差异，或加热响应存在时间延迟，则微扰算子将不再具有式 \eqref{eq:wave_cisk_perturbation} 的简单形式。
+设加热可参数化为：
+\begin{equation}
+    \nonadheat = -\moistparam \bvfreq^2 w \cdot \ee^{\ii\delta}
+    \label{eq:phase_shifted_heating}
+\end{equation}
+
+其中相位因子 $\ee^{\ii\delta}$ 描述加热相对于垂直速度的滞后（$\delta > 0$）或超前（$\delta < 0$）。
+此时微扰算子变为：
+\begin{equation}
+    \Vop = -\frac{\moistparam}{2} y^2 \cdot \ee^{\ii\delta}
+    \label{eq:complex_perturbation}
+\end{equation}
+
+一阶频率修正相应地获得虚部：
+\begin{equation}
+    \frequency^{(1)} = -\frac{\moistparam}{2} \left( \modenum + \frac{1}{2} \right) \cdot \ee^{\ii\delta} = \frequency^{(1)}_{\mathrm{Re}} + \ii \frequency^{(1)}_{\mathrm{Im}}
+    \label{eq:complex_frequency}
+\end{equation}
+
+其中实部 $\frequency^{(1)}_{\mathrm{Re}} = -(\moistparam/2)(\modenum + 1/2)\cos\delta$ 修正相速度，虚部 $\frequency^{(1)}_{\mathrm{Im}} = -(\moistparam/2)(\modenum + 1/2)\sin\delta$ 则对应增长率或衰减率。
+
+当 $0 < \delta < \pi$ 时 $\sin\delta > 0$，对应 $\imagpart(\frequency) < 0$，波动振幅随时间衰减；反之当 $-\pi < \delta < 0$ 时波动将指数增长。
+这一结果表明，加热与波动之间的相位关系是决定波动稳定性的关键因素。
+在 Wave-CISK 理论框架内，若加热恰好与上升运动同相（$\delta = 0$），波动保持中性稳定；若加热略微滞后于上升运动，波动将缓慢衰减。
+这一机制有助于我们理解热带对流与大尺度波动之间的相互作用。
+
+\subsection{本征函数的修正与模态混合}
+\label{subsec:mode_mixing}
+
+微扰不仅改变本征频率，还会修正本征函数的空间结构。
+由一阶方程 \eqref{eq:first_order_eq}，一阶态修正可表示为其他零阶态的线性组合：
+\begin{equation}
+    \ivec{\Psi}_n^{(1)} = \sum_{m \neq n} \frac{\langle \ivec{\Psi}_m^{(0)} | \Vop | \ivec{\Psi}_n^{(0)} \rangle}{\frequency_n^{(0)} - \frequency_m^{(0)}} \ivec{\Psi}_m^{(0)}
+    \label{eq:state_correction}
+\end{equation}
+
+该表达式揭示了一个重要的物理现象——模态混合（mode mixing）。
+微扰将其他本征态"混入"目标态，使得修正后的本征函数不再是单一的厄米函数，而是不同 $\modenum$ 的线性组合。
+混合系数由非对角矩阵元 $\langle \ivec{\Psi}_m^{(0)} | \Vop | \ivec{\Psi}_n^{(0)} \rangle$ 与频率差 $\frequency_n^{(0)} - \frequency_m^{(0)}$ 共同决定。
+
+对于 Wave-CISK 型微扰 $\Vop \propto y^2$，非对角矩阵元为：
+\begin{equation}
+    \langle \hfunc{m} | y^2 | \hfunc{n} \rangle = \frac{1}{2}\sqrt{(n+1)(n+2)}\,\delta_{m,n+2} + \frac{1}{2}\sqrt{n(n-1)}\,\delta_{m,n-2}
+    \label{eq:y2_offdiagonal}
+\end{equation}
+
+这意味着 $y^2$ 型微扰仅耦合经向量子数相差 $\pm 2$ 的模态：
+\begin{equation}
+    \langle \hfunc{m} | y^2 | \hfunc{n} \rangle \neq 0 \quad \Longleftrightarrow \quad \abs{m - n} = 0, 2
+    \label{eq:selection_rule}
+\end{equation}
+
+这一选择定则直接源于 $y^2$ 算子的对称性。
+由于 $y^2$ 关于赤道对称（偶函数），它只能耦合具有相同奇偶性的模态。
+厄米函数 $\hfunc{n}(y)$ 的奇偶性由 $(-1)^n$ 决定，因此 $m - n$ 必须为偶数。
+
+模态混合的物理后果可从观测角度加以理解。
+在干大气理论中，各经向模态相互独立，例如 $\modenum = 1$ 的赤道 Rossby 波具有特定的经向节点结构。
+然而，当引入湿过程时，该模态将混入 $\modenum = 3$ 等更高阶成分，导致经向结构发生变形。
+对流耦合赤道波的观测分析表明，其经向结构确实比干波理论预测的更为复杂，这可能部分归因于上述模态混合机制 \citep{kiladisConvectivelyCoupledEquatorial2009}。
+
+更一般地，若微扰不具有 $y^2$ 的对称性，选择定则将发生改变。
+例如，若热带辐合带（ITCZ）偏离赤道导致加热场关于赤道不对称，相应的微扰算子将包含奇次幂项 $\Vop \propto y$ 或 $y^3$。
+此时：
+\begin{equation}
+    \langle \hfunc{m} | y | \hfunc{n} \rangle = \frac{1}{\sqrt{2}}\sqrt{n+1}\,\delta_{m,n+1} + \frac{1}{\sqrt{2}}\sqrt{n}\,\delta_{m,n-1}
+    \label{eq:y_matrix_element}
+\end{equation}
+
+选择定则变为 $\abs{m - n} = 1$，不同奇偶性的模态得以耦合。
+这解释了为何真实大气中赤道波的对称性常常不如理论预期：北半球偏强的加热会将反对称成分混入原本对称的模态，反之亦然。
+
+\subsection{近简并态与共振耦合}
+\label{subsec:degeneracy}
+
+前述所讨论的是非简并微扰论，假设目标态与其他态的频率差足够大，即 $\abs{\frequency_n^{(0)} - \frequency_m^{(0)}} \gg \epsilon$。
+当这一条件不满足时，式 \eqref{eq:state_correction} 中的某些项分母趋于零，展开发散。
+此时需要采用简并微扰论加以处理。
+
+简并或近简并情形在赤道波动问题中并非罕见。
+回顾第 \ref{subsec:matsuno_dispersion} 小节中的 Matsuno 色散关系。
+例如，赤道 Rossby 波的高阶模态与惯性重力波的低频分支在长波极限下频率相近；混合 Rossby-重力波在某些波数下的频率介于 Rossby 波与重力波之间。
+当微扰存在时，这些近简并态之间可能发生强烈耦合，导致能量在不同波型之间高效传递。
+
+设两个态 $\ivec{\Psi}_a^{(0)}$ 与 $\ivec{\Psi}_b^{(0)}$ 满足近简并条件 $\abs{\frequency_a^{(0)} - \frequency_b^{(0)}} \sim \order{\epsilon}$。
+在这两个态张成的子空间中，微扰效由 $2 \times 2$ 的有效哈密顿矩阵描述：
+\begin{equation}
+    \mathbf{H}_{\mathrm{eff}} = \begin{pmatrix}
+        \frequency_a^{(0)} + V_{aa} & V_{ab} \\
+        V_{ba} & \frequency_b^{(0)} + V_{bb}
+    \end{pmatrix}
+    \label{eq:effective_hamiltonian}
+\end{equation}
+
+其中 $V_{ij} = \epsilon\langle \ivec{\Psi}_i^{(0)} | \Vop | \ivec{\Psi}_j^{(0)} \rangle$ 为微扰矩阵元。
+新的本征频率由久期方程给出：
+\begin{equation}
+    \det(\mathbf{H}_{\mathrm{eff}} - \frequency \mathbf{I}) = 0
+    \label{eq:secular_equation}
+\end{equation}
+
+显式求解：
+\begin{equation}
+    \frequency_\pm = \frac{(\frequency_a^{(0)} + V_{aa}) + (\frequency_b^{(0)} + V_{bb})}{2} \pm \sqrt{\left( \frac{(\frequency_a^{(0)} + V_{aa}) - (\frequency_b^{(0)} + V_{bb})}{2} \right)^2 + \abs{V_{ab}}^2}
+    \label{eq:degenerate_frequencies}
+\end{equation}
+
+当对角修正相等（$V_{aa} = V_{bb}$）且零阶频率严格简并（$\frequency_a^{(0)} = \frequency_b^{(0)}$）时：
+\begin{equation}
+    \frequency_\pm = \frequency^{(0)} + V_{aa} \pm \abs{V_{ab}}
+    \label{eq:degeneracy_lifting}
+\end{equation}
+
+非对角矩阵元 $V_{ab}$ 导致原本简并的两个态发生分裂，分裂大小为 $2\abs{V_{ab}}$。
+这一现象称为简并消除（lifting of degeneracy），类似于量子力学中外场造成的能级简并破缺。
+
+相应地，新的本征态不再是原来的 $\ivec{\Psi}_a^{(0)}$ 或 $\ivec{\Psi}_b^{(0)}$，而是二者的线性叠加：
+\begin{equation}
+    \ivec{\Psi}_\pm = \frac{1}{\sqrt{2}} \left( \ivec{\Psi}_a^{(0)} \pm \ee^{\ii\phi} \ivec{\Psi}_b^{(0)} \right)
+    \label{eq:mixed_states}
+\end{equation}
+
+其中 $\phi = \arg(V_{ab})$ 为非对角矩阵元的相位。
+这意味着在微扰作用下，原本独立的两类波动变得不可分辨，取而代之的是具有混合特征的新模态。
+
+具体而言，考虑 Rossby 波与惯性重力波的近简并耦合。
+若背景风场存在经向切变（将在下一小节详细讨论），微扰算子将包含 $y\partial_x$ 型项，其矩阵元可耦合频率相近但动力学性质迥异的模态。
+耦合的结果是产生具有混合 Rossby-重力波特征的新模态，其频率位于两个原始分支之间，空间结构兼具两者的特点。
+这一机制可能能够解释观测中某些难以简单归类的热带波动现象。
+
+\subsection{背景流场的微扰效应}
+\label{subsec:shear_perturbation}
+
+本小节将考虑背景流场效应，讨论经向风切变对赤道波动的修正。
+
+假设存在纬向背景流 $U(y)$，其经向结构可展开为：
+\begin{equation}
+    U(y) = U_0 + \Lambda y + \order{y^2}
+    \label{eq:background_flow}
+\end{equation}
+
+其中 $U_0$ 为赤道处的基本流，$\Lambda = \partial U/\partial y|_{y=0}$ 为经向切变率。
+常数部分 $U_0$ 仅产生多普勒频移 $\frequency \to \frequency - \wavenum U_0$，不改变波动的内在动力学。
+切变项 $\Lambda y$ 则引入新的微扰：
+\begin{equation}
+    \Vop_{\mathrm{shear}} = \Lambda y \cdot \wavenum
+    \label{eq:shear_perturbation}
+\end{equation}
+
+该算子作用于态矢量时，实际上修正了有效科氏参数：$y \to y + \Lambda\wavenum/\rossby$。
+这意味着背景切变在动力学上等效于将赤道波导的中心位置平移。
+
+利用式 \eqref{eq:y_matrix_element}，切变微扰的一阶频率修正为：
+\begin{equation}
+    \frequency^{(1)}_{\mathrm{shear}} = \Lambda\wavenum \langle \hfunc{\modenum} | y | \hfunc{\modenum} \rangle = 0
+    \label{eq:shear_first_order}
+\end{equation}
+
+由于 $y$ 为奇函数而 $\abs{\hfunc{\modenum}}^2$ 为偶函数，对角矩阵元恒为零。
+这表明线性切变对频率的一阶修正消失，需要计算二阶修正：
+\begin{equation}
+    \frequency^{(2)}_{\mathrm{shear}} = (\Lambda\wavenum)^2 \sum_{m \neq n} \frac{\abs{\langle \hfunc{m} | y | \hfunc{n} \rangle}^2}{\frequency_n^{(0)} - \frequency_m^{(0)}}
+    \label{eq:shear_second_order}
+\end{equation}
+
+利用选择定则 $\abs{m - n} = 1$，求和仅包含两项 $m = n \pm 1$：
+\begin{equation}
+    \frequency^{(2)}_{\mathrm{shear}} = \frac{(\Lambda\wavenum)^2}{2} \left( \frac{n+1}{\frequency_n^{(0)} - \frequency_{n+1}^{(0)}} + \frac{n}{\frequency_n^{(0)} - \frequency_{n-1}^{(0)}} \right)
+    \label{eq:shear_explicit}
+\end{equation}
+
+上式表明，背景切变对赤道波频率的修正是二阶小量，且与切变率 $\Lambda$ 的平方成正比。
+修正的符号和大小取决于相邻模态的频率差，这使得不同类型的波动对切变的响应有所不同。
+这与原子物理中的斯塔克效应（Stark effect）相似。
+在赤道波动问题中，背景切变扮演了外加电场的角色：它不直接改变波动的“能量”（频率），而是通过诱导波导的不对称变形间接产生频率偏移。
+
+背景切变除了修正频率，还会导致本征态在经向上发生位移。
+由式 \eqref{eq:state_correction}，态矢量的一阶修正为：
+\begin{equation}
+    \ivec{\Psi}_n^{(1)} = \Lambda\wavenum \left( \frac{\sqrt{n+1}\,\ivec{\Psi}_{n+1}^{(0)}}{\sqrt{2}(\frequency_n^{(0)} - \frequency_{n+1}^{(0)})} + \frac{\sqrt{n}\,\ivec{\Psi}_{n-1}^{(0)}}{\sqrt{2}(\frequency_n^{(0)} - \frequency_{n-1}^{(0)})} \right)
+    \label{eq:shear_state_correction}
+\end{equation}
+
+修正后的经向速度分布不再严格关于赤道对称（对于偶 $n$）或反对称（对于奇 $n$），而是向北或向南发生偏移。
+偏移的方向由切变的符号和波数的正负共同决定。
+
+这一效应在观测中具有可检验的后果。
+若热带大气中存在持续的经向风切变（例如由 Hadley 环流驱动），赤道波动的中心将系统性地偏离地理赤道。
+对于向东传播的 Kelvin 波（$\wavenum > 0$），正切变（$\Lambda > 0$，即北风向东增强）将使波动中心北移；对于向西传播的 Rossby 波，情况则相反。
+这种理论预测可以通过卫星观测的对流或风场数据加以验证 \citep{kiladisConvectivelyCoupledEquatorial2009}。
+
+\subsection{微扰论的适用范围}
+\label{subsec:validity}
+
+本节发展的微扰理论为理解复杂物理因素如何修正赤道波动提供了系统性分析框架。
+然而，任何近似方法都有其适用范围，明确这些局限对于正确应用理论至关重要。
+
+在弱耦合极限（$\epsilon \ll 1$）下，标准微扰展开快速收敛。
+保留一阶或二阶修正即可给出定量准确的预测，误差为 $\order{\epsilon^3}$。
+对于第 \ref{subsec:heating_effect} 小节讨论的 Wave-CISK 参数化，当 $\moistparam \lesssim 0.3$ 时，微扰论与精确解的偏差不超过 $10\%$。
+
+当微扰参数增大至中等强度（$\epsilon \sim 0.5$）时，需要保留更高阶修正以维持精度。
+对于 Wave-CISK 参数化，由 $\sqrt{1-\moistparam}$ 的泰勒展开，收敛半径为 $\abs{\moistparam} < 1$。
+当 $\moistparam = 0.75$ 时（对应观测约束的典型值），一阶展开的误差约为 $15\%$，保留至二阶可将误差降至 $5\%$ 以下。
+
+在强耦合极限（$\epsilon \to 1$）下，微扰展开发散，理论不再适用。
+对于 Wave-CISK 参数化，$\moistparam \to 1$ 对应大气趋于中性层结的极限，此时有效稳定度 $\bvfreq_{\mathrm{eff}}^2 \to 0$，赤道波动将发生本质性的改变，需要重新建模或者进行数值模拟。
+
+\subsection{小结}
+\label{subsec:chap4_summary}
+
+本节将微扰理论系统地应用于赤道波动问题，建立了分析复杂物理效应的统一框架。
+
+赤道波动方程可形式化为算子本征值问题 $\Hop_0\ivec{\Psi} = \frequency\ivec{\Psi}$，其中干大气算子 $\Hop_0$ 在适当内积下具有自伴性。
+这一数学结构为应用标准微扰论奠定了基础。
+对于 Wave-CISK 参数化的非绝热加热，一阶频率修正为 $\frequency^{(1)} = -\frequency^{(0)}/2$，表明湿耦合使所有模态的频率按相同比例降低。
+当加热与波动场存在相位差时，频率修正获得虚部，对应波动的增长或衰减，这一机制为理解热带波动的稳定性提供了理论解释。
+
+微扰引起的模态混合使本征函数的经向结构发生变形。
+对于 $y^2$ 型微扰，选择定则 $\abs{m-n} = 0, 2$ 限制了耦合模态的范围；不对称加热则可耦合不同奇偶性的模态，解释观测中赤道波对称性的破缺。
+当两个态的零阶频率接近时，简并微扰论预言原本独立的模态发生强耦合，产生具有混合特征的新本征态，这一效应可能解释热带大气中某些难以简单分类的波动现象。
+
+背景经向风切变对频率的一阶修正为零，二阶修正正比于切变率的平方，类似于原子物理中的斯塔克效应。
+切变还导致本征态的经向位移，使波动中心偏离地理赤道。
+微扰论的有效性受限于展开参数的大小，观测约束表明对流耦合赤道波对应的湿参数 $\moistparam \approx 0.75$，此时需要保留高阶修正以获得定量预测，而强耦合极限下微扰展开发散，需要非微扰方法加以处理。

@@ -1,0 +1,510 @@
+\section{层结流体的准地转运动}
+
+\subsection{层结与层结参数}
+
+在前几章中，我们主要讨论了地球流体的\textbf{旋转}特征。
+我们将地球流体处理为均匀流体 (正压性, Barotropic)。
+在这些简化模型中，流体的运动往往与高度无关 ($\pde{\vel}{z} \approx \ivec{0}$)，流动呈现出强烈的准二维特性。
+
+然而，真实的地球流体 (大气和海洋) 具有另一个本质特征——\textbf{层结 (Stratification)}。
+在重力作用下，密度大的重流体将位于密度小的轻流体下方，形成稳定的层结结构。
+层结的存在一方面使得地球流体运动是三维的，另一方面又通过浮力效应强烈地抑制了垂直方向的运动。
+因此，大尺度地球流体运动本质上是\textbf{随高度变化的准水平运动}。
+
+\subsubsection{静态背景场 (Hydrostatic Background)}
+
+假设流体绝热且无摩擦。
+考虑静止大气作为背景状态，即 $\vel_0 = \ivec{0}$。
+背景状态下的物理量仅随高度 $z$ 变化，记为 $\pressure_0(z), \density_0(z), \temperature_0(z)$。
+动量方程 \eqref{eq:momentum_lagrangian} 简化为\textbf{静力平衡关系}:
+\begin{equation}
+    \pde{\pressure_0}{z} = -\density_0 \gravityconst
+    \label{eq:hydrostatic_background}
+\end{equation}
+
+根据连续性方程 \eqref{eq:continuity_eulerian}，静止背景下密度是稳态的:
+\begin{equation}
+    \pde{\density_0}{\timevar} = 0
+    \label{eq:continuity_background}
+\end{equation}
+
+根据 \eqref{eq:adiabatic_ptemp}，绝热情况下的背景位温也是稳态的，即 $\pde{\ptemp_0}{\timevar} = 0$。
+
+状态方程 \eqref{eq:ideal_gas_law} 对时间 $\timevar$ 求偏导:
+\begin{equation*}
+    \pde{\pressure_0}{\timevar} = \gasconst \left( \temperature_0 \pde{\density_0}{\timevar} + \density_0 \pde{\temperature_0}{\timevar} \right) = \gasconst \density_0 \pde{\temperature_0}{\timevar}
+\end{equation*}
+
+绝热情况下的热力学方程 \eqref{eq:thermodynamic} 给出:
+\begin{equation*}
+    \pde{\pressure_0}{\timevar} = \specheat \density_0 \pde{\temperature_0}{\timevar}
+\end{equation*}
+
+定义干空气定容比热 $\vspecheat = \specheat - \gasconst \approx 718\,\mathrm{J/(kg \cdot K)}$。
+令上两式相减，得到:
+\begin{equation*}
+    \vspecheat \density_0 \pde{\temperature_0}{\timevar} = 0
+\end{equation*}
+
+只可能有 $\pde{\temperature_0}{\timevar} = 0$，同时 $\pde{\pressure_0}{\timevar} = 0$。
+因此，背景温度、压强也是稳态的。
+
+定义\textbf{标高 (Scale Height)} $\scaleheight = \frac{\gasconst \temperature_0}{\gravityconst}$。
+结合状态方程 \eqref{eq:ideal_gas_law} 和静力平衡关系 \eqref{eq:hydrostatic_background}，我们可以得到压力随高度的分布:
+\begin{equation}
+    \ode{\ln \pressure_0}{z} = \frac{1}{\pressure_0} \frac{\dd{\pressure_0}}{\dd{z}} = -\frac{\gravityconst}{\gasconst \temperature_0} = -\frac{1}{\scaleheight}
+    \label{eq:pressure_scale_height}
+\end{equation}
+
+对于等温大气 ($\temperature_0 = \text{const}$)，压力随高度呈指数衰减: $\pressure_0(z) = \pressure_0(0) e^{-z/\scaleheight}$。
+在对流层中，$\scaleheight \approx 8\,\mathrm{km}$。
+
+\subsubsection{位温与层结稳定性}
+
+我们引入\textbf{位温}，以统一表征气压、温度和密度随高度的变化规律。
+位温的定义式为 $\ptemp = \temperature \left(\frac{\pref}{\pressure}\right)^{\frac{\gasconst}{\specheat}}$，取对数并对$z$ 求导，利用 \eqref{eq:ideal_gas_law} 和 \eqref{eq:hydrostatic_background}:
+\begin{equation*}
+    \ode{\ln \ptemp_0}{z} = \frac{1}{\ptemp_0} \ode{\ptemp_0}{z} = \frac{1}{\temperature_0} \ode{\temperature_0}{z} - \frac{\gasconst}{\specheat} \frac{1}{\pressure_0} \ode{\pressure_0}{z} = \frac{1}{\temperature_0} \left(\ode{\temperature_0}{z} + \frac{\gravityconst}{\specheat}\right)
+\end{equation*}
+
+定义\textbf{干绝热垂直减温率 (Dry Adiabatic Lapse Rate)} $\drylapse = \frac{\gravityconst}{\specheat} \approx 9.8\,\mathrm{K/km}$，以及环境大气的\textbf{垂直减温率} $\lapse = -\ode{\temperature_0}{z}$。
+上式可写为:
+\begin{equation}
+    \ode{\ln \ptemp_0}{z} = \frac{1}{\ptemp_0} \ode{\ptemp_0}{z} = \frac{1}{\temperature_0} (\drylapse - \lapse)
+    \label{eq:stability_criterion}
+\end{equation}
+
+我们常用位温的垂直梯度 $\ode{\ptemp_0}{z}$ 来表征大气的层结状态:
+\begin{itemize}
+    \item $\ode{\ptemp_0}{z} > 0$ ($\lapse < \drylapse$): \textbf{稳定层结}。
+    气块受扰动上升后，温度低于环境温度，密度大于环境密度，受回复力作用回到原位。
+    \item $\ode{\ptemp_0}{z} = 0$ ($\lapse = \drylapse$): \textbf{中性层结}。
+    \item $\ode{\ptemp_0}{z} < 0$ ($\lapse > \drylapse$): \textbf{不稳定层结}。
+\end{itemize}
+
+在对流层平均情况下，$\lapse \approx 6.5\,\mathrm{K/km} < \drylapse$，因此大尺度大气通常是\textbf{稳定层结}。
+
+\subsubsection{基于阿基米德原理的层结稳定性分析}
+
+为了定量描述层结对流体垂直运动的影响，我们采用\textbf{气块法 (Parcel Method)} 进行分析。
+考虑一个处于静止平衡背景场中的流体微团 (气块)，将其从高度 $z$ 绝热地垂直移动微小距离 $\delta z$ 到达新高度 $z + \delta z$。
+
+在此过程中，我们引入两个关键假设:
+\begin{enumerate}
+    \item \textbf{压力平衡假设}: 气块的运动足够慢，使其内部压强能时刻调整到与周围环境压强相等。
+    \item \textbf{绝热假设}: 气块的运动又足够快，以至于来不及与环境发生热交换。
+\end{enumerate}
+
+根据阿基米德原理，气块受到的净浮力 $\buoyancy$ 等于其受到的向上浮力 (排开同体积背景流体的重力) 与向下重力之差。
+单位质量气块受到的净浮力为:
+\begin{equation}
+    \buoyancy = \frac{\density_0 - \density}{\density} \gravityconst
+    \label{eq:buoyancy}
+\end{equation}
+
+上式表明，只要气块密度小于环境密度 ($\density < \density_0$)，气块就会获得向上的正浮力。
+
+
+在新高度 $z+\delta z$ 处，环境密度为 $\density_0(z + \delta z) \approx \density_0(z) + \ode{\density_0}{z} \delta z$。
+根据流体性质的不同，我们需要分两种情况讨论:
+
+\textbf{(i) 不可压缩流体 (如海洋)}
+
+对于不可压缩流体，气块在垂直运动过程中体积不变，密度保持守恒。
+此时，气块与环境的密度差仅由环境密度的垂直分布决定:
+\begin{equation*}
+    \density_0(z+\delta z) - \density = \left( \density_0(z) + \ode{\density_0}{z} \delta z \right) - \density_0(z) = \ode{\density_0}{z} \delta z
+\end{equation*}
+
+代入 \eqref{eq:buoyancy}，得到不可压缩流体的浮力表达式:
+\begin{equation}
+    \buoyancy = \frac{\gravityconst}{\density} \left(\ode{\density_0}{z} \delta z\right)
+    \label{eq:buoyancy_incompressible}
+\end{equation}
+
+这表明，对于不可压缩流体，只要环境密度随高度减小 ($\ode{\density_0}{z} < 0$)，气块向上位移 ($\delta z > 0$) 时就会受到向下的负浮力 ($\buoyancy < 0$)，层结是稳定的。
+
+\textbf{(ii) 可压缩流体 (如大气)}
+
+对于大气，气块在垂直运动中会因环境压强的变化而发生膨胀或压缩，密度不再守恒。
+但是根据绝热假设，气块位温守恒。
+我们尝试寻找密度扰动与位温扰动之间的关系。
+由状态方程 \eqref{eq:ideal_gas_law}:
+\begin{equation*}
+    \density = \frac{\pressure}{\gasconst \ptemp} \left(\frac{\pref}{\pressure}\right)^{\frac{\gasconst}{\specheat}} = \frac{\pref^{\frac{\gasconst}{\specheat}}}{\gasconst} \frac{\pressure^{\frac{\vspecheat}{\specheat}}}{\ptemp}
+\end{equation*}
+
+对上式取对数并求微分:
+\begin{equation*}
+    \frac{\dd{\density}}{\density} = \frac{\vspecheat}{\specheat} \frac{\dd{\pressure}}{\pressure} - \frac{\dd{\ptemp}}{\ptemp}
+\end{equation*}
+
+根据压力平衡假设，气块内压强始终等于环境压强 ($\pressure = \pressure_0$)，即在同一高度上气块与环境没有压强差 ($\dd{\pressure} = 0$)。
+因此，在同一高度上，气块与环境的密度差异仅由位温差异决定，二者的乘积是常数，有:
+\begin{equation*}
+    \frac{\density_0 - \density}{\density} = \frac{1/\ptemp_0 - 1/\ptemp}{1/\ptemp} = \frac{\ptemp - \ptemp_0}{\ptemp_0}
+\end{equation*}
+
+气块与环境的位温差为:
+\begin{equation*}
+    \ptemp - \ptemp_0(z+\delta z) = \ptemp_0(z) - \left( \ptemp_0(z) + \ode{\ptemp_0}{z} \delta z \right) = - \ode{\ptemp_0}{z} \delta z
+\end{equation*}
+
+代入 \eqref{eq:buoyancy}，得到可压缩流体的浮力表达式:
+\begin{equation}
+    \buoyancy = -\frac{\gravityconst}{\ptemp_0} \left(\ode{\ptemp_0}{z} \delta z\right) = -\gravityconst \ode{\ln \ptemp_0}{z} \delta z
+    \label{eq:buoyancy_compressible}
+\end{equation}
+
+\vspace{1em}
+
+根据牛顿第二定律 $\buoyancy = \ode[2]{(\delta z)}{\timevar}$，我们将 \eqref{eq:buoyancy_incompressible} 和 \eqref{eq:buoyancy_compressible} 统一写为简谐振动的形式:
+\begin{equation}
+    \ode[2]{(\delta z)}{\timevar} + \bvfreq^2 \delta z = 0
+    \label{eq:buoyancy_oscillation}
+\end{equation}
+
+其中$\bvfreq$ 称为\textbf{Brunt-Vaisala频率} (或浮力频率):
+\begin{equation}
+    \bvfreq^2 =
+    \begin{cases}
+        -\frac{\gravityconst}{\density} \ode{\density_0}{z} & \text{(不可压缩流体)} \\
+        \frac{\gravityconst}{\ptemp_0} \ode{\ptemp_0}{z} & \text{(可压缩流体)}
+    \end{cases}
+    \label{eq:bv_frequency_def}
+\end{equation}
+
+频率 $\bvfreq^2$ 的符号直接决定了方程 \eqref{eq:buoyancy_oscillation} 解的性质，从而决定了层结的稳定性。
+\begin{itemize}
+    \item $\bvfreq^2 > 0$ 时，解为 $\delta z \sim e^{\pm i \bvfreq t}$，流体微团在平衡位置附近作频率为 $\bvfreq$ 的\textbf{重力内波}振荡。
+    \item $\bvfreq^2 < 0$ 时，解为 $\delta z \sim e^{\pm \sqrt{-\bvfreq^2} t}$，微团位移随时间呈指数增长，引发强烈的\textbf{对流}。
+\end{itemize}
+
+我们将层结稳定性判据总结如下表:
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c|c|c|c|c|c|c|c|c}
+        \hline
+        \textbf{层结状态} & $\density$ & $\temperature$ & $\ptemp$ & \textbf{减温率条件} & \textbf{浮力} $\buoyancy$ & $\bvfreq^2$ & $\ode{\density_0}{z}$ & $\ode{\ptemp_0}{z}$ \\
+        \hline
+        \textbf{稳定} & $> \density_0$ & $< \temperature_0$ & $< \ptemp_0$ & $\lapse < \drylapse$ & $< 0$ & $> 0$ & $< 0$ & $> 0$ \\
+        \textbf{中性} & $= \density_0$ & $= \temperature_0$ & $= \ptemp_0$ & $\lapse = \drylapse$ & $= 0$ & $= 0$ & $= 0$ & $= 0$ \\
+        \textbf{不稳定} & $< \density_0$ & $> \temperature_0$ & $> \ptemp_0$ & $\lapse > \drylapse$ & $> 0$ & $< 0$ & $> 0$ & $< 0$ \\
+        \hline
+    \end{tabular}
+    \caption{层结稳定性判据总结}
+    \label{tab:stability_criteria}
+\end{table}
+
+\subsection{以静态为背景的基本方程组}
+
+类似于线性化方法 \eqref{eq:wavefunc_decomposition}，我们将绝热、无摩擦的静止大气作为背景状态，将大气状态变量分解为基本态 (背景场) 与扰动量:
+\begin{align*}
+    \vel(\pos, \timevar) &= \vel^\prime(\pos, \timevar) \\
+    \pressure(\pos, \timevar) &= \pressure_0(z) + \pressure^\prime(\pos, \timevar) \\
+    \density(\pos, \timevar) &= \density_0(z) + \density^\prime(\pos, \timevar) \\
+    \temperature(\pos, \timevar) &= \temperature_0(z) + \temperature^\prime(\pos, \timevar) \\
+    \ptemp(\pos, \timevar) &= \ptemp_0(z) + \ptemp^\prime(\pos, \timevar)
+\end{align*}
+
+其中，背景场仅为高度 $z$ 的函数，且满足静力平衡关系 \eqref{eq:hydrostatic_background}。
+我们仍然假定扰动量相对于基本态足够小: $\norm{\pressure^\prime} \ll \norm{\pressure_0}$，$\norm{\density^\prime} \ll \norm{\density_0}$，$\norm{\temperature^\prime} \ll \norm{\temperature_0}$，$\norm{\ptemp^\prime} \ll \norm{\ptemp_0}$。
+
+对于小量 $x$ ($\norm{x} \ll 1$)，Taylor展开给出近似 $(1 + x)^{-1} \approx 1 - x$。
+因此，我们可以给出密度倒数的近似表示:
+\begin{equation}
+    \frac{1}{\density} = \frac{1}{\density_0 + \density^\prime} = \frac{1}{\density_0} \left(1 + \frac{\density^\prime}{\density_0}\right)^{-1} \approx \frac{1}{\density_0} \left(1 - \frac{\density^\prime}{\density_0}\right)
+    \label{eq:rho_inverse_approx}
+\end{equation}
+
+\subsubsection{扰动动量方程 (Perturbation Momentum Equation)}
+
+将速度分解代入动量方程 \eqref{eq:momentum_lagrangian}:
+\begin{equation*}
+    \matderiv{\vel^\prime} = -\coriolis \kvec \times \vel^\prime - \frac{1}{\density} \nabla \pressure + \gravity
+\end{equation*}
+
+利用 \eqref{eq:hydrostatic_background}，\eqref{eq:rho_inverse_approx}，并忽略二阶小量，我们可以化简方程中的压力梯度力项和重力项:
+\begin{equation*}
+    -\frac{1}{\density} \nabla \pressure + \gravity = -\frac{1}{\density_0} \left(1 - \frac{\density^\prime}{\density_0}\right) (\nabla \pressure^\prime + \density_0 \gravity) + \gravity = - \frac{1}{\density_0} \nabla \pressure^\prime + \frac{\density^\prime}{\density_0} \gravity
+\end{equation*}
+
+\textbf{扰动动量方程}为:
+\begin{equation}
+    \matderiv{\vel^\prime} = -\coriolis \kvec \times \vel^\prime - \frac{1}{\density_0} \nabla \pressure^\prime + \frac{\density^\prime}{\density_0} \gravity
+    \label{eq:perturbation_momentum}
+\end{equation}
+
+可见，扰动动量方程的形式与原方程基本相同，只是密度取为背景值 $\density_0$，且多出一项由密度扰动引起的阿基米德浮力 $\frac{\density^\prime}{\density_0} \gravity$。
+
+\subsubsection{扰动连续性方程 (Perturbation Continuity Equation)}
+
+从拉格朗日形式的连续性方程 \eqref{eq:continuity_lagrangian} 出发，代入状态分解:
+\begin{equation*}
+    \frac{1}{\density_0 + \density^\prime} \matderiv{(\density_0 + \density^\prime)} + \nabla \cdot \vel^\prime = 0
+\end{equation*}
+
+背景密度仅随高度 $z$ 变化，其物质导数为:
+\begin{equation*}
+    \matderiv{\density_0} = \pde{\density_0}{\timevar} + \vel^\prime \cdot \nabla \density_0 = w^\prime \ode{\density_0}{z}
+\end{equation*}
+
+利用 \eqref{eq:rho_inverse_approx}，并忽略二阶小量:
+\begin{equation*}
+    \frac{1}{\density_0 + \density^\prime} \matderiv{(\density_0 + \density^\prime)} = \frac{1}{\density_0} \left(1 - \frac{\density^\prime}{\density_0}\right) \left(w^\prime \ode{\density_0}{z} + \matderiv{\density^\prime}\right) = \frac{w^\prime}{\density_0} \ode{\density_0}{z} + \matderiv{}\left(\frac{\density^\prime}{\density_0}\right)
+\end{equation*}
+
+其中 $\frac{w^\prime}{\density_0} \ode{\density_0}{z} + \pde{w^\prime}{z} = \frac{1}{\density_0} \pde{(\density_0 w^\prime)}{z}$。
+因此，\textbf{扰动连续性方程}为:
+\begin{equation}
+    \matderiv{}\left(\frac{\density^\prime}{\density_0}\right) + \nabla_h \vel_h^\prime + \frac{1}{\density_0} \pde{(\density_0 w^\prime)}{z} = 0
+    \label{eq:perturbation_continuity}
+\end{equation}
+
+\subsubsection{扰动状态方程 (Perturbation State Equation)}
+
+将状态分解代入状态方程 \eqref{eq:ideal_gas_law}:
+\begin{equation*}
+    \pressure_0 + \pressure^\prime = (\density_0 + \density^\prime) \gasconst (\temperature_0 + \temperature^\prime)
+\end{equation*}
+
+展开并忽略二阶小量，减去背景场满足的关系 $\pressure_0 = \density_0 \gasconst \temperature_0$，扰动部分满足:
+\begin{equation*}
+    \pressure^\prime = \density^\prime \gasconst \temperature_0 + \density_0 \gasconst \temperature^\prime
+\end{equation*}
+
+两边除以 $\pressure_0 = \density_0 \gasconst \temperature_0$，得到\textbf{扰动状态方程}:
+\begin{equation}
+    \frac{\pressure^\prime}{\pressure_0} = \frac{\density^\prime}{\density_0} + \frac{\temperature^\prime}{\temperature_0}
+    \label{eq:perturbation_state}
+\end{equation}
+
+我们试图将扰动状态方程改写为关于位温的形式。
+对于背景场: $\ptemp_0 = \temperature_0 \left(\frac{\pref}{\pressure_0}\right)^{\frac{\gasconst}{\specheat}}$。
+对于全场: $\ptemp_0 + \ptemp^\prime = (\temperature_0 + \temperature^\prime) \left(\frac{\pref}{\pressure_0 + \pressure^\prime}\right)^{\frac{\gasconst}{\specheat}}$。
+二者相除，取对数:
+\begin{equation*}
+    \ln(1 + \frac{\ptemp^\prime}{\ptemp_0}) = \ln(1 + \frac{\temperature^\prime}{\temperature_0}) - \frac{\gasconst}{\specheat} \ln(1 + \frac{\pressure^\prime}{\pressure_0})
+\end{equation*}
+
+根据Taylor展开，$\ln(1 + x) \approx x$ ($\norm{x} \ll 1$)，于是:
+\begin{equation*}
+    \frac{\ptemp^\prime}{\ptemp_0} = \frac{\temperature^\prime}{\temperature_0} - \frac{\gasconst}{\specheat} \frac{\pressure^\prime}{\pressure_0}
+\end{equation*}
+
+将 \eqref{eq:perturbation_state} 代入，消去 $\frac{\temperature^\prime}{\temperature_0}$，得到\textbf{关于位温的扰动状态方程}:
+\begin{equation}
+    \frac{\ptemp^\prime}{\ptemp_0} = \frac{1}{\gamma} \frac{\pressure^\prime}{\pressure_0} - \frac{\density^\prime}{\density_0}
+    \label{eq:perturbation_state_ptemp}
+\end{equation}
+
+其中 $\gamma = \frac{\specheat}{\vspecheat} \approx 1.40$ 是\textbf{Poisson指数}。
+
+定义\textbf{绝热声速} $C_s^2 = \gamma \gasconst \temperature_0$，方程 \eqref{eq:perturbation_state_ptemp} 也常写为以下形式:
+\begin{equation}
+    \density_0 \frac{\ptemp^\prime}{\ptemp_0} = \frac{1}{C_s^2} \pressure^\prime - \density^\prime
+    \label{eq:perturbation_state_cs}
+\end{equation}
+
+在对流层中，一般 $C_s \approx 330\,\mathrm{m/s}$。
+
+\subsubsection{扰动绝热方程 (Perturbation Adiabatic Equation)}
+
+绝热过程中位温守恒，将位温分解代入 \eqref{eq:adiabatic_ptemp}:
+\begin{equation*}
+    0 = \matderiv{\ptemp} = \matderiv{(\ptemp_0 + \ptemp^\prime)} = \matderiv{\ptemp^\prime} + w^\prime \ode{\ptemp_0}{z}
+\end{equation*}
+
+\textbf{扰动绝热方程}为:
+\begin{equation}
+    \matderiv{\ptemp^\prime} + w^\prime \ode{\ptemp_0}{z} = 0
+    \label{eq:perturbation_adiabatic_ptemp}
+\end{equation}
+
+根据 \eqref{eq:bv_frequency_def}，扰动绝热方程也可以写为含Brunt-Vaisala频率的形式:
+\begin{equation}
+    \matderiv{}\left(\frac{\ptemp^\prime}{\ptemp_0} \gravityconst\right) + \bvfreq^2 w^\prime = 0
+    \label{eq:perturbation_buoyancy}
+\end{equation}
+
+\subsection{三种常见近似}
+
+在前一节中，我们建立了以静态为背景的扰动方程组。
+然而，这些方程仍然过于复杂。
+在实际进行建模时，有必要引入合理的近似以简化方程组，突出某一特定尺度地球流体运动的本质特征。
+
+本节介绍三种常用的近似: \textbf{静力近似}、\textbf{非弹性近似}和\textbf{Boussinesq近似}。
+
+\subsubsection{静力近似 (Hydrostatic Approximation)}
+
+静力近似假定垂直运动远小于水平运动，可以忽略垂直加速度。
+该近似适用于\textbf{大尺度运动} (水平尺度 $\hscale \sim 100\,\mathrm{km}$)，在大气环流模拟 (GCM) 中广泛使用，其优点是保留了重力内波和Rossby波等大尺度运动模态。
+
+在静力近似假设下，扰动动量方程 \eqref{eq:perturbation_momentum} 的垂直分量简化为:
+\begin{equation}
+    \pde{\pressure^\prime}{z} = -\density^\prime \gravityconst
+    \label{eq:hydrostatic_approx}
+\end{equation}
+
+这表明\textbf{扰动场也满足静力平衡关系}。
+
+\subsubsection{非弹性近似 (Anelastic Approximation)}
+
+非弹性近似假定流体的可压缩性仅体现在背景密度 $\density_0(z)$ 随高度的变化上，密度扰动的时变可以忽略，即略去连续性方程中的 $\matderiv{}(\frac{\density^\prime}{\density_0})$ 项。
+该近似适用于\textbf{较小尺度的大气运动}，如积云对流等。
+
+在非弹性近似假设下，扰动连续性方程 \eqref{eq:perturbation_continuity} 简化为:
+\begin{equation}
+    \density_0 \nabla_h \cdot \vel_h^\prime + \pde{(\density_0 w^\prime)}{z} = 0
+    \label{eq:anelastic_continuity}
+\end{equation}
+
+上式可以改写为 $\nabla \cdot (\density_0 \vel^\prime) = 0$，表明\textbf{扰动场的质量通量是无散的}。
+
+\subsubsection{Boussinesq近似}
+
+对于海洋或浅层大气，若流体厚度远小于标高 ($\vscale \ll \scaleheight$)，可以采用Boussinesq近似。
+该近似是非弹性近似的进一步简化，\textbf{在连续性方程和状态方程中不再考虑密度的个别变化}，近似作为不可压缩流体处理。
+
+在Boussinesq近似下，扰动连续性方程进一步简化为无辐散条件:
+\begin{equation}
+    \nabla_h \cdot \vel^\prime = 0
+    \label{eq:boussinesq_continuity}
+\end{equation}
+
+状态方程简化为:
+\begin{equation}
+    \frac{\ptemp^\prime}{\ptemp_0} = -\frac{\density^\prime}{\density_0} = \frac{\temperature^\prime}{\temperature_0}
+    \label{eq:boussinesq_state}
+\end{equation}
+
+Boussinesq近似在保留层结运动特征的前提下，将复杂的可压缩流体方程组简化为了类似不可压缩流体的形式，是研究层结流体动力学的基础框架。
+
+\subsection{层结流体的准地转位涡方程}
+
+在第二章中，我们推导得出了无粘浅水系统的位涡守恒定律 \eqref{eq:pv_conservation}。
+该守恒律揭示了均匀流体中涡度与流体柱厚度之间的内在联系。
+对于层结流体，这一关系需要进行适当的推广。
+本节将在准地转近似下，推导层结流体的位涡方程。
+
+\subsubsection{准地转位涡方程 (Quasi-Geostrophic Potential Vorticity Equation)}
+
+考虑大尺度的层结可压缩流体运动，采用静力近似和Boussinesq近似。
+
+使用 $\beta$ 平面近似，设科氏参数 $\coriolis = \coriolis_0 + \rossby y$。
+大尺度运动的Rossby数 $\ro \ll 1$，我们将水平速度分解为两部分:
+\begin{equation*}
+    \vel_h^\prime = \vel_g + \vel_{ag}
+\end{equation*}
+
+其中 $\vel_g$ 是\textbf{地转流}，$\vel_{ag}$ 是\textbf{非地转流}，满足 $\norm{\vel_{ag}} \sim O(\ro) \norm{\vel_g} \ll \norm{\vel_g}$。
+
+将 $\rossby$ 和 $\ro$ 视为小参数，在零级近似下，扰动动量方程 \eqref{eq:perturbation_momentum} 的水平分量给出地转平衡关系 $\coriolis_0 \kvec \times \vel_g = -\frac{1}{\density_0} \nabla_h \pressure^\prime$。
+由此可以定义\textbf{准地转流函数}:
+\begin{equation}
+    \streamfunc_g = \frac{\pressure^\prime}{\coriolis_0 \density_0}
+    \label{eq:qg_streamfunction}
+\end{equation}
+
+地转风和地转涡度可以用准地转流函数 $\streamfunc_g$ 表示:
+\begin{align*}
+    \vel_g &= \nabla_h \times \streamfunc_g = \left(-\pde{\streamfunc_g}{y}, \pde{\streamfunc_g}{x}, 0\right) \\
+    \relvort_g &= \kvec \cdot (\nabla_h \times \vel_g) = \nabla_h^2 \streamfunc_g
+\end{align*}
+
+现在，我们对扰动动量方程 \eqref{eq:perturbation_momentum} 的水平分量作用水平旋度算子 $\kvec \cdot (\nabla_h \times \cdot)$。
+类似于绝对涡度方程 \eqref{eq:absolute_vorticity_equation} 的推导，利用涡旋拉伸效应 \eqref{eq:vortex_stretching_proof}，容易得到:
+\begin{equation*}
+    \matderiv{(\relvort^\prime + \coriolis)} + (\relvort^\prime + \coriolis) (\nabla_h \cdot \vel_h^\prime) = 0
+\end{equation*}
+
+利用非弹性近似下的连续性方程 \eqref{eq:anelastic_continuity} 处理辐散项:
+\begin{equation*}
+    \matderiv{(\relvort^\prime + \coriolis)} = \frac{\relvort^\prime + \coriolis}{\density_0} \pde{(\density_0 w^\prime)}{z}
+\end{equation*}
+
+引入\textbf{准地转近似}。
+在零阶近似下，我们用地转流 $\vel_g^\prime$ 替代完整扰动流 $\vel_h^\prime$ 来计算物质导数和涡度。
+物质导数 $\matderiv{}$ 将变为\textbf{地转导数}:
+\begin{equation*}
+    \mathrm{D}_g = \pde{}{\timevar} + \vel_g \cdot \nabla_h
+\end{equation*}
+
+此外，注意到 $\relvort^\prime \sim \rossby y \sim\ro \coriolis_0$，
+因此，在零阶近似下，方程右侧:
+\begin{equation*}
+    \relvort^\prime + \coriolis = \coriolis_0 + \underbrace{\relvort^\prime + \rossby y}_{O(\ro)\coriolis_0} \approx \coriolis_0
+\end{equation*}
+
+经过以上简化，我们得到了\textbf{准地转位涡方程 (QGPV Equation)}:
+\begin{equation}
+    \mathrm{D}_g (\relvort_g + \coriolis) = \frac{\coriolis_0}{\density_0} \pde{(\density_0 w^\prime)}{z}
+    \label{eq:QGPV_equation}
+\end{equation}
+
+类似地，将准地转近似应用于扰动绝热方程 \eqref{eq:perturbation_buoyancy}，得到准地转绝热方程:
+\begin{equation}
+    \mathrm{D}_g \left(\frac{\ptemp^\prime}{\ptemp_0} \gravityconst\right) + \bvfreq^2 w^\prime = 0
+    \label{eq:QGPV_buoyancy}
+\end{equation}
+
+\subsubsection{Charney-Obukhov方程}
+
+从准地转位涡方程 \eqref{eq:QGPV_equation} 和准地转绝热方程 \eqref{eq:QGPV_buoyancy} 可以导出\textbf{Charney-Obukhov方程}:
+\begin{equation}
+    \mathrm{D}_g \left[\relvort_g + \coriolis + \frac{1}{\density_0} \pde{}{z}\left(\frac{\coriolis_0^2}{\bvfreq^2} \density_0 \pde{\streamfunc_g}{z}\right)\right] = 0
+    \label{eq:Charney_Obukhov_equation}
+\end{equation}
+
+\begin{proofbox}[Charney-Obukhov方程]
+    由静力近似 \eqref{eq:hydrostatic_approx} 和Boussinesq近似下的扰动状态方程 \eqref{eq:boussinesq_state}:
+    \begin{equation*}
+        \pde{\pressure^\prime}{z} = -\density^\prime \gravityconst = \frac{\density_0 \gravityconst}{\ptemp_0} \ptemp^\prime
+    \end{equation*}
+
+    代入准地转流函数 \eqref{eq:qg_streamfunction} 和Brunt-Vaisala频率 \eqref{eq:bv_frequency_def}:
+    \begin{equation*}
+        \pde{\streamfunc_g}{z} = \frac{\gravityconst}{\coriolis_0 \ptemp_0} \ptemp^\prime = \frac{\bvfreq^2}{\coriolis_0} \frac{\ptemp^\prime \gravityconst / \ptemp_0}{\bvfreq^2}
+    \end{equation*}
+
+    于是，准地转绝热方程 \eqref{eq:QGPV_buoyancy} 可以写为关于 $\streamfunc_g$ 的形式:
+    \begin{equation*}
+        \frac{\coriolis_0}{\bvfreq^2} \mathrm{D}_g \left(\pde{\streamfunc_g}{z}\right) + w^\prime = 0
+    \end{equation*}
+
+    代入准地转位涡方程 \eqref{eq:QGPV_equation}:
+    \begin{equation*}
+        \mathrm{D}_g (\relvort_g + \coriolis) + \frac{\coriolis_0}{\density_0} \pde{}{z}\left[\density_0 \frac{\coriolis_0}{\bvfreq^2} \mathrm{D}_g \left(\pde{\streamfunc_g}{z}\right)\right] = 0
+    \end{equation*}
+
+    对于第二项，利用链式法则展开:
+    \begin{align*}
+        \frac{\coriolis_0}{\density_0} \pde{}{z}\left[\density_0 \frac{\coriolis_0}{\bvfreq^2} \mathrm{D}_g \left(\pde{\streamfunc_g}{z}\right)\right] &= \frac{\coriolis_0}{\density_0} \pde{}{z}\left[\mathrm{D}_g \left(\density_0 \frac{\coriolis_0}{\bvfreq^2} \pde{\streamfunc_g}{z}\right)\right] \\
+        &= \mathrm{D}_g \left[\frac{1}{\density_0} \pde{}{z}\left(\density_0 \frac{\coriolis_0^2}{\bvfreq^2} \pde{\streamfunc_g}{z}\right)\right] + \frac{\coriolis_0}{\density_0} \pde{\vel_g}{z} \cdot \nabla_h \left(\density_0 \frac{\coriolis_0}{\bvfreq^2} \pde{\streamfunc_g}{z}\right)
+    \end{align*}
+
+    其中:
+    \footnote{使用矢量恒等式 $(\nabla \times \varphi) \cdot \nabla \varphi = 0$。}
+    \begin{equation*}
+        \pde{\vel_g}{z} \cdot \nabla_h \left(\density_0 \frac{\coriolis_0}{\bvfreq^2} \pde{\streamfunc_g}{z}\right) = \density_0 \frac{\coriolis_0}{\bvfreq^2} \pde{\vel_g}{z} \cdot \nabla_h \pde{\streamfunc_g}{z} = \density_0 \frac{\coriolis_0}{\bvfreq^2} \left(\nabla_h \times \pde{\streamfunc_g}{z}\right) \cdot \nabla_h \pde{\streamfunc_g}{z} = 0
+    \end{equation*}
+
+    整理上述推导结果，即得到了Charney-Obukhov方程:
+    \begin{equation*}
+        \mathrm{D}_g \left[\relvort_g + \coriolis + \frac{1}{\density_0} \pde{}{z}\left(\frac{\coriolis_0^2}{\bvfreq^2} \density_0 \pde{\streamfunc_g}{z}\right)\right] = \mathrm{D}_g (\relvort_g + \coriolis) + \mathrm{D}_g \left[\frac{1}{\density_0} \pde{}{z}\left(\density_0 \frac{\coriolis_0^2}{\bvfreq^2} \pde{\streamfunc_g}{z}\right)\right] = 0
+    \end{equation*}
+\end{proofbox}
+
+定义\textbf{层结流体的位涡}:
+\begin{equation}
+    \pv = \relvort_g + \coriolis + \frac{1}{\density_0} \pde{}{z}\left(\frac{\coriolis_0^2}{\bvfreq^2} \density_0 \pde{\streamfunc_g}{z}\right)
+    \label{eq:def_qg_pv}
+\end{equation}
+
+Charney-Obukhov方程告诉我们，\textbf{层结流体质点携带的位涡是一个守恒量}:
+\begin{equation}
+    \mathrm{D}_g \pv = 0
+    \label{eq:qg_pv_conservation}
+\end{equation}

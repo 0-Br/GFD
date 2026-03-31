@@ -1,0 +1,180 @@
+%======================================================================
+% 1. 数学环境与格式 (Mathematical Environments & Formatting)
+%======================================================================
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+%======================================================================
+% 2. 基本数学符号 (Basic Mathematical Symbols)
+%======================================================================
+
+% -- 微分算子 (Differential Operators) --
+\newcommand{\dd}[1]{\mathrm{d} #1}
+
+% -- 导数 (Derivative) --
+\newcommand{\ode}[3][1]{%
+    \ifnum#1=1
+        \frac{\dd{#2}}{\dd{#3}}%
+    \else
+        \frac{\mathrm{d}^{#1} #2}{\mathrm{d} #3^{#1}}%
+    \fi
+}
+
+% -- 偏导数 (Partial Derivative) --
+\newcommand{\pde}[3][1]{%
+    \ifnum#1=1
+        \frac{\partial #2}{\partial #3}%
+    \else
+        \frac{\partial^{#1} #2}{\partial #3^{#1}}%
+    \fi
+}
+
+% -- 混合偏导数 (Mixed Partial Derivative) --
+\newcommand{\mpde}[3]{\frac{\partial^2 #1}{\partial #2 \, \partial #3}}
+
+% -- 向量与算子 (Vectors & Operators) --
+\newcommand{\norm}[1]{\lVert #1 \rVert}
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+\newcommand{\ivec}[1]{\bm{#1}}
+\newcommand{\pos}{\ivec{x}}
+\newcommand{\vel}{\ivec{u}}
+\newcommand{\kvec}{\hat{\ivec{k}}}
+
+% -- 复数与波动 (Complex Numbers & Waves) --
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\cc}{\mathrm{c.c.}}
+\newcommand{\realpart}{\mathrm{Re}}
+\newcommand{\imagpart}{\mathrm{Im}}
+\newcommand{\conj}[1]{\overline{#1}}
+\newcommand{\complexamp}[1]{\widehat{#1}}
+\newcommand{\complexexp}[1]{\ee^{\ii #1}}
+
+%======================================================================
+% 3. 物理量定义 (Physical Variables)
+%======================================================================
+
+% -- 坐标与时间 --
+\newcommand{\timevar}{t}
+
+% -- 地球旋转 --
+\newcommand{\earthradius}{a}
+\newcommand{\latitude}{\varphi}
+\newcommand{\rotationvec}{\ivec{\Omega}}
+\newcommand{\coriolis}{f}
+\newcommand{\rossby}{\beta}
+\newcommand{\ro}{\varepsilon}
+
+% -- 热力学变量 --
+\newcommand{\pressure}{p}
+\newcommand{\density}{\rho}
+\newcommand{\temperature}{T}
+\newcommand{\ptemp}{\theta}
+\newcommand{\nonadheat}{Q}
+
+% -- 物理常数与参数 --
+\newcommand{\gravityconst}{g}
+\newcommand{\gasconst}{R_d}
+\newcommand{\specheat}{c_p}
+\newcommand{\vspecheat}{c_v}
+\newcommand{\pref}{p_{\mathrm{ref}}}
+
+% -- 浅水系统变量 --
+\newcommand{\freeheight}{\eta}
+\newcommand{\bottomheight}{h_b}
+\newcommand{\depth}{H}
+\newcommand{\gravpotential}{\phi}
+
+% -- 涡度相关 --
+\newcommand{\relvort}{\zeta}
+\newcommand{\absvort}{\zeta_{\mathrm{abs}}}
+\newcommand{\pv}{q}
+
+% -- 尺度分析 --
+\newcommand{\hvel}{U}
+\newcommand{\vvel}{W}
+\newcommand{\hscale}{L}
+\newcommand{\vscale}{D}
+\newcommand{\timescale}{\tau}
+
+% -- 波动相关 --
+\newcommand{\wavefunc}{\psi}
+\newcommand{\frequency}{\omega}
+\newcommand{\wavenum}{k}
+
+% -- 层结流体相关 --
+\newcommand{\bvfreq}{N}
+\newcommand{\buoyancy}{B}
+\newcommand{\lapse}{\Gamma}
+\newcommand{\drylapse}{\Gamma_d}
+\newcommand{\scaleheight}{H_s}
+
+% -- 物质导数 --
+\newcommand{\matderiv}[1]{\frac{\mathrm{D} #1}{\mathrm{D} \timevar}}
+
+%======================================================================
+% 4. 赤道波动特有符号 (Equatorial Wave Specific Symbols)
+%======================================================================
+
+% -- 等效深度与特征尺度 --
+\newcommand{\eqdepth}{h}
+\newcommand{\Leq}{L}
+\newcommand{\Teq}{T}
+\newcommand{\ceq}{c}
+
+% -- 无量纲变量标记 --
+\newcommand{\ndim}[1]{\tilde{#1}}
+
+% -- 组合变量 --
+\newcommand{\qvar}{q}
+\newcommand{\rvar}{r}
+
+% -- 梯算子 (Ladder Operators) --
+\newcommand{\aop}{\hat{a}}
+\newcommand{\adop}{\hat{a}^{\dagger}}
+\newcommand{\Hop}{\hat{\mathcal{H}}}
+\newcommand{\Nop}{\hat{N}}
+\newcommand{\Vop}{\hat{V}}
+\newcommand{\comm}[2]{\left[ #1, #2 \right]}
+
+% -- 垂直结构算子与函数 --
+\newcommand{\vertop}{\hat{\mathcal{L}}}
+\newcommand{\horzop}{\hat{\mathcal{M}}}
+\newcommand{\vertfunc}{Z}
+\newcommand{\vertmode}{m}
+
+% -- 厄米函数与多项式 --
+\newcommand{\Hpoly}[1]{H_{#1}}
+\newcommand{\hfunc}[1]{\psi_{#1}}
+\newcommand{\modenum}{n}
+
+% -- 投影算子 --
+\newcommand{\proj}[1]{\mathcal{P}_{#1}}
+
+% -- 湿度参数 --
+\newcommand{\moistparam}{\alpha}
+
+%======================================================================
+% 5. 特殊波动类型标记 (Wave Type Labels)
+%======================================================================
+
+\newcommand{\Kelvin}{\mathrm{Kelvin}}
+\newcommand{\Rossby}{\mathrm{Rossby}}
+\newcommand{\MRG}{\mathrm{MRG}}
+\newcommand{\IGW}{\mathrm{IG}}
+\newcommand{\EIG}{\mathrm{EIG}}
+\newcommand{\WIG}{\mathrm{WIG}}
+
+%======================================================================
+% 6. 常用缩写与标记 (Common Abbreviations & Labels)
+%======================================================================
+
+\newcommand{\order}[1]{\mathcal{O}\left(#1\right)}
+\newcommand{\const}{\mathrm{const}}
+\newcommand{\etal}{\textit{et al.}}
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\cf}{\textit{cf.}}
+\newcommand{\aka}{\textit{a.k.a.}}

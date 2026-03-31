@@ -1,0 +1,974 @@
+\section*{作业}
+
+\subsection*{第一次作业}
+
+\begin{enumerate}
+
+    \item 证明矢量恒等式:
+    \begin{equation*}
+        \matderiv{\vel} = \pde{\vel}{\timevar} + \nabla \left(\frac{\norm{\vel}^2}{2}\right) + (\nabla \times \vel) \times \vel
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    右式中的 $\nabla \left(\frac{\norm{\vel}^2}{2}\right)$ 可展开为:
+    \footnote{使用矢量恒等式 $\nabla (\ivec{f} \cdot \ivec{g}) = (\ivec{f} \cdot \nabla) \ivec{g} + (\ivec{g} \cdot \nabla) \ivec{f} + \ivec{f} \times (\nabla \times \ivec{g}) + \ivec{g} \times (\nabla \times \ivec{f})$。}
+    \begin{align*}
+        \nabla \left(\frac{\norm{\vel}^2}{2}\right) = \frac{1}{2} \nabla(\vel \cdot \vel) &= \frac{1}{2} ((\vel \cdot \nabla) \vel + (\vel \cdot \nabla) \vel + \vel \times (\nabla \times \vel) + \vel \times (\nabla \times \vel)) \\
+        &= (\vel \cdot \nabla) \vel - (\nabla \times \vel) \times \vel
+    \end{align*}
+
+    于是:
+    \begin{equation*}
+        \text{RHS} = \pde{\vel}{\timevar} + (\vel \cdot \nabla) \vel - (\nabla \times \vel) \times \vel + (\nabla \times \vel) \times \vel = \pde{\vel}{\timevar} + (\vel \cdot \nabla) \vel = \matderiv{\vel}
+    \end{equation*}
+
+    \qed
+
+    \item 设地面重力加速度为 $\gravityconst_0$，不考虑科里奥利力，证明: 当 $z \ll \earthradius$ 时，重力加速度可近似表示为:
+    \begin{equation*}
+        \gravityconst = \gravityconst_0 \left(1 - \frac{2z}{\earthradius}\right)
+    \end{equation*}
+
+    其中 $\earthradius$ 为地球半径，$z$ 为相对于地表的高度。
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    设地球质量为 $M$，万有引力常数为 $G$，地球表面重力加速度为:
+    \begin{equation*}
+        \gravityconst_0 = \frac{GM}{\earthradius^2}
+    \end{equation*}
+
+    在高度 $z$ 处，距离地心的距离为 $r = \earthradius + z$，重力加速度为:
+    \begin{equation*}
+        \gravityconst(z) = \frac{GM}{(\earthradius + z)^2}
+    \end{equation*}
+
+    在 $z \ll \earthradius$ 的假设下:
+    \begin{equation*}
+        \frac{\gravityconst(z)}{\gravityconst_0} = \frac{\earthradius^2}{(\earthradius + z)^2} = \left(1 + \frac{z}{\earthradius}\right)^{-2} \approx 1 - \frac{2z}{\earthradius}
+    \end{equation*}
+
+    即:
+    \begin{equation*}
+        \gravityconst(z) = \gravityconst_0 \left(1 - \frac{2z}{\earthradius}\right)
+    \end{equation*}
+
+    \qed
+
+    \item 证明连续性方程的拉格朗日形式与欧拉形式等价:
+    \begin{align*}
+        \underbrace{\matderiv{\density} + \density(\nabla \cdot \vel)}_{\text{拉格朗日形式}} &= 0 \\
+        \underbrace{\pde{\density}{\timevar} + \nabla \cdot (\density \vel)}_{\text{欧拉形式}} &= 0
+    \end{align*}
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    从拉格朗日形式开始:
+    \begin{align*}
+        \matderiv{\density} + \density(\nabla \cdot \vel)
+        &= \pde{\density}{\timevar} + (\vel \cdot \nabla)\density + \density(\nabla \cdot \vel) \\
+        &= \pde{\density}{\timevar} + u_i \pde{\density}{x_i} + \density \pde{u_i}{x_i} \\
+        &= \pde{\density}{\timevar} + \pde{(\density u_i)}{x_i} \\
+        &= \pde{\density}{\timevar} + \nabla \cdot (\density \vel)
+    \end{align*}
+
+    \qed
+
+    \item 如果考虑地球自转角速度 $\rotationvec$ 的大小变化，即地球自转加快或者减慢，需要在运动方程中增加一项:
+    \begin{equation*}
+        \matderiv{u} = \coriolis v -\frac{1}{\density} \pde{\pressure}{x} - \alpha \ode{\norm{\rotationvec}}{\timevar} \earthradius \cos\latitude
+    \end{equation*}
+
+    右端第二项表征因地球自转速率的变化通过固体地球与大气或者海洋之间的角动量交换所产生的对大气或者海洋的附加作用力。
+    式中，$\alpha$ 是固体地球对大气或者海洋的作用系数。
+    $\norm{\rotationvec} \earthradius \cos\latitude$ 是地球自转角速度在纬度 $\latitude$ 的线速度。
+    这里应用了“薄层近似”，即认为大气或者海洋的垂直尺度比地球的半径而言可以忽略，$r \approx \earthradius$。
+
+    证明: 当地球自转角速度 $\norm{\rotationvec}$ 减小 (自转减慢) 时，易形成厄尔尼诺；反之，当地球自转加快时，宜形成拉尼娜。
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    在赤道附近，纬度 $\latitude \approx 0$，运动方程近似为:
+    \begin{equation*}
+        \ode{u}{\timevar} \approx -\frac{1}{\density} \pde{\pressure}{x} - \alpha \ode{\norm{\rotationvec}}{\timevar} \earthradius
+    \end{equation*}
+
+    上式中，$\ode{u}{\timevar}$代表赤道纬向风的加速度。
+    由于东西太平洋之间的气压梯度力，赤道太平洋盛行东风 (信风) ，即$u < 0$。
+    我们关注的是地球自转角速度变化带来的附加加速度项。
+
+    当\textbf{地球自转减慢}时，$\ode{\norm{\rotationvec}}{\timevar} < 0$，因此附加项$-\alpha \ode{\norm{\rotationvec}}{\timevar} \earthradius > 0$。
+    这意味着一个东向的加速度，与正常情况下向西的信风方向相反，因此会起到\textbf{削弱信风}的作用。
+    减弱的信风使得赤道西太平洋的暖水更有机会向东扩展，东太平洋的冷水上翻受到抑制，导致赤道中、东太平洋海表温度异常升高，从而\textbf{提高了形成厄尔尼诺的可能性}。
+
+    反之，当\textbf{地球自转加快}时，$\ode{\norm{\rotationvec}}{\timevar} > 0$，附加项$-\alpha \ode{\norm{\rotationvec}}{\timevar} \earthradius < 0$。
+    这意味着一个西向的加速度，会起到\textbf{增强信风}的作用。
+    增强的信风使得赤道西太平洋的暖水更难以向东扩展，东太平洋的冷水上翻得到加强，导致赤道中、东太平洋海表温度异常降低，从而\textbf{提高了形成拉尼娜的可能性}。
+
+    \qed
+
+\end{enumerate}
+
+\subsection*{第二次作业}
+
+\begin{enumerate}
+
+    \item 利用正交模方法推导Rossby波的频数关系:
+    \begin{equation*}
+        \frequency = -\frac{\rossby_0 k}{k^2 + l^2}
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{推导:}
+
+    线性化的涡度方程 \eqref{eq:linear_vorticity_rossby} 为:
+    \begin{equation*}
+        \pde{\relvort^\prime}{\timevar} + \rossby_0 v^\prime = 0
+    \end{equation*}
+
+    由无辐散条件 $\nabla_h \cdot \vel_h^\prime = 0$，我们可以引入流函数 $\streamfunc$，满足: $\vel_h = \kvec \times \nabla_h \streamfunc$。
+
+    相对涡度 $\relvort^\prime = \kvec \cdot (\nabla_h \times \kvec \times \nabla_h \streamfunc^\prime) = \nabla_h^2 \streamfunc^\prime$。
+
+    得到Rossby波的控制方程:
+    \begin{equation*}
+        \pde{}{\timevar} (\nabla_h^2 \streamfunc^\prime) + \rossby_0 \pde{\streamfunc^\prime}{x} = 0
+    \end{equation*}
+
+    设正交模解形式为 $\streamfunc^\prime = \complexamp{\streamfunc^\prime} \complexexp{(\kvec_h \cdot \pos_h - \frequency \timevar)}$，代入方程:
+    \begin{equation*}
+        (-i \frequency)(-(k^2 + l^2)) + \rossby_0 (i k) = 0 \implies \frequency (k^2 + l^2) + \rossby_0 k = 0
+    \end{equation*}
+
+    整理即得频散关系:
+    \begin{equation*}
+        \frequency = -\frac{\rossby_0 k}{k^2 + l^2}
+    \end{equation*}
+
+    \item 推导平均西风基本气流背景下的二维Rossby波的频数关系、波速、以及驻波的临界波长。
+
+    \vspace{1em}
+    \textbf{推导:}
+
+    设基本态为均匀西风气流，此时总速度场为 $\vel_h = \vel_0 + \vel_h^\prime = (\hvel_0 + u^\prime, v^\prime, 0)$。
+    代入水平动量方程 \eqref{eq:linear_swe_momentum}:
+    \begin{equation*}
+        \pde{\vel_h^\prime}{\timevar} + (\vel_0 \cdot \nabla_h) \vel_h^\prime + (\vel_h^\prime \cdot \nabla_h) \vel_h^\prime = - \coriolis \kvec \times \vel_h - \gravityconst \nabla_h \freeheight
+    \end{equation*}
+
+    $\beta$ 平面近似: $\coriolis = \coriolis_0 + \rossby_0 y$。
+    忽略二阶小量 $(\vel_h^\prime \cdot \nabla_h) \vel^\prime$ 并施加水平旋度算子 $\kvec \cdot (\nabla_h \times \cdot)$:
+    \begin{equation*}
+        \pde{}{\timevar}\underbrace{\left[\kvec \cdot (\nabla_h \times \vel_h^\prime)\right]}_{\relvort^\prime} + \kvec \cdot (\nabla_h \times (\vel_0 \cdot \nabla_h) \vel_h^\prime) + \kvec \cdot (\nabla_h \times (\coriolis \kvec \times \vel_h)) = 0
+    \end{equation*}
+
+    第二项为:
+    \begin{equation*}
+        \kvec \cdot (\nabla_h \times (\vel_0 \cdot \nabla_h) \vel_h^\prime) =
+        \kvec \cdot (\nabla_h \times (\hvel_0 \pde{\vel_h^\prime}{x})) =
+        (\hvel_0 \pde{}{x}) (\kvec \cdot (\nabla_h \times \vel_h^\prime)) = \hvel_0 \pde{\relvort^\prime}{x}
+    \end{equation*}
+
+    第三项为:
+    \begin{align*}
+    \kvec \cdot (\nabla_h \times (\coriolis \kvec \times \vel_h)) &= \kvec \cdot (\nabla_h(\coriolis_0 + \rossby_0 y) \times (\kvec \times \vel_h)) + (\coriolis_0 + \rossby_0 y) (\kvec \cdot \nabla_h \times (\kvec \times \vel_h)) \\
+    &= \nabla_h(\coriolis_0 + \rossby_0 y) \cdot \vel_h + (\coriolis_0 + \rossby_0 y) (\nabla_h \cdot \vel_h) = \rossby_0 v^\prime
+    \end{align*}
+
+    涡度方程 \eqref{eq:linear_vorticity_rossby} 修正为:
+    \begin{equation*}
+        \pde{\relvort^\prime}{\timevar} + \hvel_0 \pde{\relvort^\prime}{x} + \rossby_0 v^\prime = 0
+    \end{equation*}
+
+    Rossby波的控制方程为:
+    \begin{equation*}
+        \pde{}{\timevar}(\nabla_h^2 \streamfunc^\prime) + \hvel_0 \pde{}{x}(\nabla_h^2 \streamfunc^\prime) + \rossby_0 \pde{\streamfunc^\prime}{x} = 0
+    \end{equation*}
+
+    设正交模解形式为 $\streamfunc^\prime = \complexamp{\streamfunc^\prime} \complexexp{(\kvec_h \cdot \pos_h - \frequency \timevar)}$，代入方程:
+    \begin{equation*}
+        (-i\frequency)(-(k^2 + l^2)) + \hvel_0 (ik)(-(k^2 + l^2)) + \rossby_0 (ik) = 0
+    \end{equation*}
+
+    频散关系为:
+    \begin{equation*}
+        \frequency = \hvel_0 k - \frac{\rossby_0 k}{k^2 + l^2}
+    \end{equation*}
+
+    纬向和经向波速为:
+    \begin{equation*}
+        c_x = \frac{\frequency}{k} = \hvel_0 - \frac{\rossby_0}{k^2 + l^2}, \quad c_y = \frac{\frequency}{l} = \frac{k}{l} c_x
+    \end{equation*}
+
+    驻波条件为 $c_x = 0$，要求:
+    \begin{equation*}
+        \hvel_0 = \frac{\rossby_0}{k^2 + l^2} = \frac{\rossby_0}{4\pi^2} \frac{\lambda_x^2 \lambda_y^2}{\lambda_x^2 + \lambda_y^2}
+    \end{equation*}
+
+    临界波长条件:
+    \begin{equation*}
+        \frac{1}{\lambda_x^2} + \frac{1}{\lambda_y^2} = \frac{\rossby_0}{4\pi^2 \hvel_0}
+    \end{equation*}
+
+    特别地，若不考虑经向Rossby波，即 $l = 0$，临界波长条件为:
+    \begin{equation*}
+        \lambda_x = 2\pi\sqrt{\frac{\hvel_0}{\rossby_0}}
+    \end{equation*}
+
+    \item 推导Poincare波和Kelvin波的控制方程，请消去 $v^\prime$ 和 $\gravpotential^\prime$ 得到关于 $u^\prime$ 的二阶齐次微分方程及边界条件，进而运用正交模方法求解。
+
+    \vspace{1em}
+    \textbf{推导:}
+
+    设正交模解形式为 $(\vel_h^\prime, \gravpotential^\prime) = (\complexamp{\vel_h^\prime}(y), \complexamp{\gravpotential^\prime}(y)) \complexexp{(k x - \frequency \timevar)}$。
+    代入线性化浅水方程组 \eqref{eq:linear_swe_momentum}, \eqref{eq:linear_swe_thickness}:
+    \begin{align*}
+        -i \frequency \complexamp{u^\prime} - \coriolis \complexamp{v^\prime} &= -i k\complexamp{\gravpotential^\prime} \tag{a} \\
+        -i \frequency \complexamp{v^\prime} + \coriolis \complexamp{u^\prime} &= -\ode{\complexamp{\gravpotential^\prime}}{y} \tag{b} \\
+        -i \frequency \complexamp{\gravpotential^\prime} + C_0^2 \left(ik\complexamp{u^\prime} + \ode{\complexamp{v^\prime}}{y}\right) &= 0 \tag{c}
+    \end{align*}
+
+    将 (a) 代入 (b) 和 (c):
+    \begin{align*}
+        (\frequency^2 - \coriolis^2) \complexamp{u^\prime} &= \frequency k \complexamp{\gravpotential^\prime} + \coriolis \ode{\complexamp{\gravpotential^\prime}}{y} \tag{I} \\
+        \frequency \ode{\complexamp{u^\prime}}{y} - \coriolis k \complexamp{u^\prime} &= k \ode{\complexamp{\gravpotential^\prime}}{y} - \frac{\frequency \coriolis}{C_0^2} \complexamp{\gravpotential^\prime} \tag{II} \\
+    \end{align*}
+
+    将 (I) 代入 (II)，消去 $\ode{\complexamp{\gravpotential^\prime}}{y}$:
+    \begin{equation*}
+        \frequency \ode{\complexamp{u^\prime}}{y} - \coriolis k \complexamp{u^\prime} = \frac{k}{\coriolis} ((\frequency^2 - \coriolis^2) \complexamp{u^\prime} - \frequency k \complexamp{\gravpotential^\prime}) - \frac{\frequency \coriolis}{C_0^2} \complexamp{\gravpotential^\prime}
+    \end{equation*}
+
+    整理:
+    \begin{equation*}
+        \complexamp{\gravpotential^\prime} = \frac{C_0^2}{\coriolis^2 + k^2 C_0^2} \left(\frequency k \complexamp{u^\prime} - \coriolis \ode{\complexamp{u^\prime}}{y}\right) \tag{III}
+    \end{equation*}
+
+    代回 (I)，
+    \begin{equation*}
+        (\frequency^2 - \coriolis^2) \complexamp{u^\prime} = \frac{C_0^2}{\coriolis^2 + k^2 C_0^2} \left(\frequency^2 k^2 \complexamp{u^\prime} - \coriolis^2 \ode[2]{\complexamp{u^\prime}}{y}\right)
+    \end{equation*}
+
+    定义 $\alpha^2 = \frac{\frequency^2 - \coriolis^2}{C_0^2} - k^2$，整理得到关于 $\complexamp{u^\prime}$ 的控制方程:
+    \begin{equation*}
+        \ode[2]{\complexamp{u^\prime}}{y} + \alpha^2 \complexamp{u^\prime} = 0
+    \end{equation*}
+
+    边界条件: $y = 0, L$ 处，$\complexamp{v^\prime} = 0$。
+    将 (a) 代入 (III)，消去 $\complexamp{\gravpotential^\prime}$:
+    \begin{equation*}
+        \frac{i}{k} \complexamp{v^\prime} = \frac{C_0^2}{\coriolis^2 + k^2 C_0^2} \left(\frac{\frequency \coriolis}{k C_0^2} \complexamp{u^\prime} + \ode{\complexamp{u^\prime}}{y}\right)
+    \end{equation*}
+
+    因此，记 $\mu = \frac{\frequency \coriolis}{k C_0^2}$，具体的边界条件为:
+    \begin{equation*}
+        \ode{\complexamp{u^\prime}}{y} + \mu \complexamp{u^\prime} = 0, \quad y = 0, L
+    \end{equation*}
+
+    根据 $\alpha^2$ 的符号，分两种情况讨论:
+
+    \textbf{(i) Poincare波 ($\alpha^2 > 0$)}
+
+    控制方程的通解为:
+    \begin{equation*}
+        \complexamp{u^\prime}(y) = A \cos(\alpha y) + B \sin(\alpha y)
+    \end{equation*}
+
+    代入边界条件:
+    \begin{equation*}
+        \begin{cases}
+            \alpha B + \mu A = 0 \\
+            \alpha (-A \sin(\alpha L) + B \cos(\alpha L)) + \mu (A \cos(\alpha L) + B \sin(\alpha L)) = 0
+        \end{cases}
+    \end{equation*}
+
+    整理:
+    \begin{equation*}
+        -A (\alpha + \frac{\mu^2}{\alpha}) \sin(\alpha L) = 0
+    \end{equation*}
+
+    注意到 $\alpha + \frac{\mu^2}{\alpha} \ne 0$，故非平凡解条件为:
+    \begin{equation*}
+        \sin(\alpha L) = 0 \quad  \implies \quad  \alpha = \frac{n\pi}{L}, \quad n = 1, 2, 3, \ldots
+    \end{equation*}
+
+    代入 $\alpha^2$ 的定义式，得到\textbf{Poincare波的频散关系}:
+    \begin{equation*}
+        \frequency = \pm \sqrt{\coriolis^2 + C_0^2 \left(k^2 + \frac{n^2 \pi^2}{L^2}\right)}, \quad n = 1, 2, 3, \ldots
+    \end{equation*}
+
+    接下来求解各物理量的解析表达式。
+    取 $A = k \complexamp{u_0^\prime}$，则 $B = -\frac{k \mu}{\alpha} \complexamp{u_0^\prime}$。
+    于是:
+    \begin{equation*}
+        \complexamp{u^\prime}(y) = \complexamp{u_0^\prime} \left(k \cos(\alpha y) - \frac{k \mu}{\alpha} \sin(\alpha y)\right)
+    \end{equation*}
+
+    代入 (III):
+    \begin{equation*}
+        \complexamp{\gravpotential^\prime}(y) = \complexamp{u_0^\prime} \left(\frequency \cos(\alpha y) - \frac{\coriolis k}{\alpha} \sin(\alpha y)\right)
+    \end{equation*}
+
+    代入 (a):
+    \begin{equation*}
+        \complexamp{v^\prime}(y) = -\complexamp{u_0^\prime} \left(\frac{\coriolis^2 + \alpha^2 C_0^2}{\alpha C_0^2}\right) i \sin(\alpha y)
+    \end{equation*}
+
+    \textbf{(ii) Kelvin波 ($\alpha^2 < 0$)}
+
+    令 $\gamma^2 = -\alpha^2 = k^2 - \frac{\frequency^2 - \coriolis^2}{C_0^2} > 0$。
+    控制方程的通解为:
+    \begin{equation*}
+        \complexamp{u^\prime}(y) = A e^{\gamma y} + B e^{-\gamma y}
+    \end{equation*}
+
+    代入边界条件:
+    \begin{equation*}
+        \begin{cases}
+            (\gamma + \mu) A + (-\gamma + \mu) B = 0 \\
+            (\gamma + \mu) e^{\gamma L} A + (-\gamma + \mu) e^{-\gamma L} B = 0
+        \end{cases}
+    \end{equation*}
+
+    非平凡解要求系数行列式为零:
+    \begin{equation*}
+        (\gamma + \mu)(-\gamma + \mu) (e^{-\gamma L} - e^{\gamma L}) = 0
+    \end{equation*}
+
+    注意到 $e^{-\gamma L} \neq e^{\gamma L}$，必须有 $\mu^2 = \gamma^2$。
+    代入定义:
+    \begin{equation*}
+        \left(\frac{\frequency \coriolis}{k C_0^2}\right)^2 = k^2 - \frac{\frequency^2 - \coriolis^2}{C_0^2}
+    \end{equation*}
+
+    整理:
+    \begin{equation*}
+        \frequency^2 (\coriolis^2 + k^2 C_0^2) = k^2 C_0^2 (\coriolis^2 + k^2 C_0^2) \implies \frequency^2 = k^2 C_0^2
+    \end{equation*}
+
+    得到\textbf{Kelvin波的频散关系}:
+    \begin{equation*}
+        \frequency = \pm k C_0
+    \end{equation*}
+
+    此时 $\mu = \frac{(\pm k C_0) \coriolis}{k C_0^2} = \pm \frac{\coriolis}{C_0}$，且 $\gamma = \sqrt{k^2 - \frac{k^2 C_0^2 - \coriolis^2}{C_0^2}} = \frac{\norm{\coriolis}}{C_0}$。
+    即 $\mu = \pm \gamma$。
+
+    两种情况时等价的，仅讨论 $\mu = \gamma$ 的情况，取 $A = \complexamp{u_0^\prime}$，解析解为:
+    \begin{align*}
+        \complexamp{u^\prime}(y) &= \complexamp{u_0^\prime} e^{-\frac{\norm{\coriolis}}{C_0} y} \\
+        \complexamp{\gravpotential^\prime}(y) &= \text{sgn}(\coriolis) \complexamp{u_0^\prime} C_0 e^{-\frac{\norm{\coriolis}}{C_0} y} \\
+        \complexamp{v^\prime}(y) &= 0
+    \end{align*}
+
+    \item 在无粘浅水系统中，$\pv = \frac{\relvort + \coriolis}{\depth}$ 是 \eqref{eq:def_potential_vorticity} 定义的位涡。
+    定义位涡拟能:
+    \begin{equation*}
+        E_\Pi = \frac{1}{2} \pv^2
+    \end{equation*}
+
+    证明:
+    \begin{equation*}
+        \pde{(\depth E_\Pi)}{\timevar} + \nabla_h \cdot (\depth E_\Pi \vel_h) = 0
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    \begin{equation*}
+        \pde{(\depth E_\Pi)}{\timevar} = \pde{(\frac{1}{2} \depth \pv^2)}{\timevar} = \frac{1}{2} \pv^2 \pde{\depth}{\timevar} + \depth \pv \pde{\pv}{\timevar}
+    \end{equation*}
+    \begin{align*}
+        \nabla_h \cdot (\depth E_\Pi \vel_h) &= \nabla_h \cdot (\frac{1}{2} \depth \pv^2 \vel_h) \\
+        &= \nabla (\frac{1}{2} \depth \pv^2) \cdot \vel_h + \frac{1}{2} \depth \pv^2 (\nabla \cdot \vel_h) \\
+        &= \frac{1}{2} \pv^2 (\nabla \depth \cdot \vel_h) + \depth \pv (\nabla \pv \cdot \vel_h) + \frac{1}{2} \depth \pv^2 (\nabla \cdot \vel_h)
+    \end{align*}
+
+    合并两式，根据厚度方程 \eqref{eq:thickness_lagrangian} 和位涡守恒 \eqref{eq:pv_conservation}:
+    \begin{align*}
+        \text{LHS} &= \frac{1}{2} \pv^2 \left(\pde{\depth}{\timevar} + \nabla \depth \cdot \vel_h + \depth (\nabla \cdot \vel_h)\right) + \depth \pv \left(\pde{\pv}{\timevar} + \nabla \pv \cdot \vel_h\right) \\
+        &= \frac{1}{2} \pv^2 \underbrace{\left(\matderiv{\depth} + \depth (\nabla \cdot \vel_h)\right)}_{\text{厚度方程}} + \depth \pv \underbrace{\matderiv{\pv}}_{\text{位涡守恒}} \\
+        &= 0
+    \end{align*}
+
+    \qed
+
+    \item 利用正交模方法求下列波动方程的圆频率:
+
+    \begin{equation*}
+        \text{(1)} \quad \pde[2]{\psi}{\timevar} = C_0^2 \pde[2]{\psi}{x}
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{解:}
+
+    设正交模解形式为:
+    \begin{equation*}
+        \psi(x, \timevar) = \complexamp{\psi} \complexexp{(k x - \frequency \timevar)}
+    \end{equation*}
+
+    代入原波动方程:
+    \begin{equation*}
+        (-\frequency^2 \complexamp{\psi}) = C_0^2 (-k^2 \complexamp{\psi})
+    \end{equation*}
+
+    得到频散关系:
+    \begin{equation*}
+        \frequency^2 = C_0^2 k^2
+    \end{equation*}
+
+    解得圆频率:
+    \begin{equation*}
+        \frequency = \pm C_0 k
+    \end{equation*}
+
+    \begin{equation*}
+    \text{(2)} \quad \pde[2]{\psi}{\timevar} + \gamma^2 \pde[4]{\psi}{x} = 0
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{解:}
+
+    设正交模解形式为:
+    \begin{equation*}
+        \psi(x, \timevar) = \complexamp{\psi} \complexexp{(k x - \frequency \timevar)}
+    \end{equation*}
+
+    代入原波动方程:
+    \begin{equation*}
+        (-\frequency^2 \complexamp{\psi}) + \gamma^2 (k^4 \complexamp{\psi}) = 0
+    \end{equation*}
+
+    得到频散关系:
+    \begin{equation*}
+        \frequency^2 = \gamma^2 k^4
+    \end{equation*}
+
+    解得圆频率:
+    \begin{equation*}
+        \frequency = \pm \gamma k^2
+    \end{equation*}
+
+    \begin{equation*}
+        \text{(3)} \quad \pde{\psi}{\timevar} + \bar{u} \pde{\psi}{x} + \gamma \pde[3]{\psi}{x} = 0
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{解:}
+
+    设正交模解形式为:
+    \begin{equation*}
+        \psi(x, \timevar) = \complexamp{\psi} \complexexp{(k x - \frequency \timevar)}
+    \end{equation*}
+
+    代入原波动方程:
+    \begin{equation*}
+        (-i\frequency \complexamp{\psi}) + \bar{u} (ik \complexamp{\psi}) + \gamma (-ik^3 \complexamp{\psi}) = 0
+    \end{equation*}
+
+    得到频散关系:
+    \begin{equation*}
+        -\frequency + \bar{u} k - \gamma k^3 = 0
+    \end{equation*}
+
+    解得圆频率:
+    \begin{equation*}
+        \frequency = \bar{u} k - \gamma k^3
+    \end{equation*}
+
+    \begin{equation*}
+        \text{(4)} \quad \pde[2]{\psi}{\timevar} - C_0^2 \nabla_h^2 \psi - \lambda^2 \nabla_h^2 \pde[2]{\psi}{\timevar} = 0
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{解:}
+
+    设正交模解形式为:
+    \begin{equation*}
+        \psi(\pos_h, \timevar) = \complexamp{\psi} \complexexp{(k x + l y - \frequency \timevar)}
+    \end{equation*}
+
+    代入原波动方程:
+    \begin{equation*}
+        (-\frequency^2 \complexamp{\psi}) - C_0^2 (-(k^2 + l^2) \complexamp{\psi}) - \lambda^2 (-(k^2 + l^2))(-\frequency^2 \complexamp{\psi}) = 0
+    \end{equation*}
+
+    整理，得到频散关系:
+    \begin{equation*}
+        \frequency^2 (1 + \lambda^2 (k^2 + l^2)) = C_0^2 (k^2 + l^2)
+    \end{equation*}
+
+    解得圆频率:
+    \begin{equation*}
+        \frequency = \pm C_0 \sqrt{\frac{k^2 + l^2}{1 + \lambda^2 (k^2 + l^2)}}
+    \end{equation*}
+
+    \item 对于表面重力波，如不使用静力平衡假定，而应用下列方程组:
+    \begin{align*}
+        \pde{u^\prime}{\timevar} &= -\frac{1}{\density} \pde{\pressure^\prime}{x} \tag{a} \\
+        \pde{w^\prime}{\timevar} &= -\frac{1}{\density} \pde{\pressure^\prime}{z} \tag{b} \\
+        \pde{u^\prime}{x} + \pde{w^\prime}{z} &= 0 \tag{c}
+    \end{align*}
+
+    其中 $\density$ 为常数。
+    边界条件为:
+    \begin{itemize}
+        \item $z = 0$ 时: $w^\prime = 0$
+        \item $z = h$ 时: $\pde{\pressure^\prime}{\timevar} + w^\prime \pde{\pressure_0}{z} = \pde{\pressure^\prime}{\timevar} - \gravityconst \density w^\prime = 0$
+    \end{itemize}
+
+    证明波速 $c$ 满足:
+    \begin{equation*}
+        c^2 = \frac{\gravityconst}{k} \tanh(k h)
+    \end{equation*}
+
+    并讨论 $k h \ll 1$ (长波) 和 $k h \gg 1$ (短波) 两种情况。
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    对 (a) 求 $x$ 的偏导数，对 (b) 求 $z$ 的偏导数，相加:
+    \begin{equation*}
+        \pde{}{\timevar}\left(\pde{u^\prime}{x} + \pde{w^\prime}{z}\right) = -\frac{1}{\density} \left(\pde[2]{\pressure^\prime}{x} + \pde[2]{\pressure^\prime}{z}\right)
+    \end{equation*}
+
+    利用 (c)，可知 $\pressure^\prime$ 满足拉普拉斯方程:
+    \begin{equation*}
+        \pde[2]{\pressure^\prime}{x} + \pde[2]{\pressure^\prime}{z} = 0
+    \end{equation*}
+
+    设 $\pressure^\prime$ 的波动解形式为 $\pressure^\prime(x, z, \timevar) = \complexamp{\pressure^\prime}(z) \complexexp{(k x - \frequency \timevar)}$，代入拉普拉斯方程:
+    \begin{equation*}
+        -k^2 \complexamp{\pressure^\prime} + \ode[2]{\complexamp{\pressure^\prime}}{z} = 0
+    \end{equation*}
+
+    该二阶常微分方程的通解为:
+    \begin{equation*}
+        \complexamp{\pressure^\prime}(z) = A \cosh(k z) + B \sinh(k z)
+    \end{equation*}
+
+    设 $w^\prime$ 的波动解形式为 $w^\prime(x, z, \timevar) = \complexamp{w^\prime}(z) \complexexp{(k x - \frequency \timevar)}$，代入 (b): $\complexamp{w^\prime} = \frac{1}{i \frequency \density} \ode{\complexamp{\pressure^\prime}}{z}$。
+
+    代入边界条件:
+    \begin{itemize}
+        \item $z = 0$ 时: $\ode{\complexamp{\pressure^\prime}}{z} = 0$。
+        代入通解形式，即 $B = 0$。
+        通解形式简化为 $\complexamp{\pressure^\prime}(z) = A \cosh(k z)$。
+
+        \item $z = h$ 时: $-i \frequency {\complexamp{\pressure^\prime}} - \frac{\gravityconst}{i \frequency} \ode{\complexamp{\pressure^\prime}}{z} = 0$。
+        代入通解形式，得: $\frequency^2 \cosh(kh) - \gravityconst k \sinh(kh) = 0$。
+    \end{itemize}
+
+    整理得到频散关系:
+    \begin{equation*}
+        \frequency^2 = \gravityconst k \tanh(kh)
+    \end{equation*}
+
+    波速:
+    \begin{equation*}
+        c^2 = \frac{\frequency^2}{k^2} = \frac{\gravityconst}{k} \tanh(kh)
+    \end{equation*}
+
+    讨论:
+    \begin{itemize}
+        \item 长波近似 (浅水波): 当 $k h \ll 1$ 时，$\tanh(k h) \approx kh$。
+        \begin{equation*}
+            c^2 \approx \frac{\gravityconst}{k} (k h) = \gravityconst h \implies c = \sqrt{\gravityconst h}
+        \end{equation*}
+
+        此时波速与波长无关，表现为无频散波，与原始结果 \eqref{eq:gravity_wave_speed} 一致。
+
+        \item 短波近似 (深水波): 当 $k h \gg 1$ 时，$\tanh(k h) \approx 1$。
+        \begin{equation*}
+            c^2 \approx \frac{\gravityconst}{k} \implies c = \sqrt{\frac{\gravityconst}{k}} = \sqrt{\frac{\gravityconst \lambda}{2\pi}}
+        \end{equation*}
+
+        此时波速依赖于波数，表现为频散波。
+    \end{itemize}
+
+    \qed
+
+    \item 求解定常正压水平无扰散涡度方程:
+    \begin{equation*}
+        \bar{u} \pde[2]{v}{x} + \rossby_0 v = 0
+    \end{equation*}
+
+    边界条件:
+    \begin{equation*}
+        \left.v\right|_{x = 0} = 0, \quad \left.\pde{v}{x}\right|_{x = 0} = \relvort_0
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{解:}
+
+    该方程为关于 $x$ 的二阶常系数齐次线性微分方程。
+    根据基本态纬向气流 $\bar{u}$ 的符号，分两种情况讨论。
+
+    (1) 西风基本气流 ($\bar{u} > 0$)
+
+    定义 $k = \sqrt{\frac{\rossby_0}{\bar{u}}}$。
+    方程化为:
+    \begin{equation*}
+        \pde[2]{v}{x} + k^2 v = 0
+    \end{equation*}
+
+    通解形式:
+    \begin{equation*}
+        v(x) = A \cos(k x) + B \sin(k x)
+    \end{equation*}
+
+    代入边界条件:
+    \begin{itemize}
+        \item $\left.v\right|_{x = 0} = A = 0$，通解形式简化为 $v(x) = B \sin(k x)$。
+
+        \item $\left.\pde{v}{x}\right|_{x = 0} = k B = \relvort_0$，$B = \frac{\relvort_0}{k}$。
+    \end{itemize}
+
+    得到西风条件下的解:
+    \begin{equation*}
+        v(x) = \relvort_0 \sqrt{\frac{\bar{u}}{\rossby_0}} \sin\left(\sqrt{\frac{\rossby_0}{\bar{u}}} x\right)
+    \end{equation*}
+
+    这表明在西风基本气流中可以维持定常的Rossby波。
+    波数为 $k = \sqrt{\frac{\rossby_0}{\bar{u}}}$。
+
+    (2) 东风基本气流 ($\bar{u} < 0$)
+
+    定义 $\mu = \sqrt{-\frac{\rossby_0}{\bar{u}}}$。
+    方程化为:
+    \begin{equation*}
+        \pde[2]{v}{x} - \mu^2 v = 0
+    \end{equation*}
+
+    通解形式:
+    \begin{equation*}
+        v(x) = C \cosh(\mu x) + D \sinh(\mu x)
+    \end{equation*}
+
+    代入边界条件
+    \begin{itemize}
+        \item $\left.v\right|_{x = 0} = C = 0$，通解形式简化为 $v(x) = D \sinh(\mu x)$。
+
+        \item $\left.\pde{v}{x}\right|_{x = 0} = \mu D = \relvort_0$，$D = \frac{\relvort_0}{\mu}$。
+    \end{itemize}
+
+    得到东风条件下的解:
+    \begin{equation*}
+        v(x) = \relvort_0 \sqrt{-\frac{\bar{u}}{\rossby_0}} \sinh\left(\sqrt{-\frac{\rossby_0}{\bar{u}}} x\right)
+    \end{equation*}
+
+    此时，$v$ 随 $x$ 呈指数增长 (或衰减)，无法形成稳定的定常Rossby波。
+
+    \item 位涡的原始定义为:
+    \begin{equation*}
+        \pv = \frac{(\nabla \times \vel + 2\rotationvec) \cdot \nabla \ln \ptemp}{\density}
+    \end{equation*}
+
+    如何将其与无粘浅水模型中的位涡定义 \eqref{eq:def_potential_vorticity} 联系起来？
+
+    \vspace{1em}
+    \textbf{推导:}
+
+    在浅水近似下，我们引入以下假设:
+    \begin{enumerate}
+        \item \textbf{柱状运动与垂直矢量主导}:
+        由于水平尺度远大于垂直尺度，且流体满足静力平衡，水平速度 $\vel_h$ 随高度变化可忽略。
+        绝对涡度矢量主要由垂直分量贡献:
+        \begin{equation*}
+            \nabla \times \vel + 2\rotationvec \approx (\relvort + \coriolis) \kvec
+        \end{equation*}
+
+        \item \textbf{层结近似}:
+        浅水模型可视作密度 $\density$ 均匀的单层流体。
+        我们将该流体层视为被两个物质面 (如等熵面) 所界定，设上下边界的位温差为 $\Delta \ptemp$。
+        位温梯度主要集中在垂直方向，且与层厚 $\depth$ 成反比:
+        \begin{equation*}
+            \nabla \ln \ptemp = \frac{1}{\ptemp} \nabla \ptemp \approx \frac{1}{\ptemp} \pde{\ptemp}{z} \kvec \approx \frac{1}{\ptemp} \frac{\Delta \ptemp}{\depth} \kvec
+        \end{equation*}
+    \end{enumerate}
+
+    将上述近似代入位涡定义:
+    \begin{equation*}
+        \pv \approx \frac{(\relvort + \coriolis)\kvec \cdot \left(\frac{1}{\ptemp} \frac{\Delta \ptemp}{\depth} \kvec\right)}{\density} = \left(\frac{\Delta \ptemp}{\density \ptemp}\right) \frac{\relvort + \coriolis}{\depth}
+    \end{equation*}
+
+    在不可压缩、绝热的浅水模型中，$\density$、$\ptemp$ 及 $\Delta \ptemp$ 均为常数或守恒量。
+    除去这些常数因子，其动力学核心部分即为无粘浅水模型中的位涡定义:
+
+\end{enumerate}
+
+\subsection*{第三次作业}
+
+\begin{enumerate}
+
+    \item Meteorological observations above New York ($41^\circ\,\mathrm{N}$) reveal a neutral atmospheric boundary layer (no convection and no stratification) and a westerly geostrophic wind of $12\,\mathrm{m/s}$ at $1000\,\mathrm{m}$ above street level.
+    Under neutral conditions, Ekman dynamics apply.
+    Using an eddy viscosity of $10\,\mathrm{m^2/s}$, determine the wind speed and direction atop the Empire State Building, which stands $381\,\mathrm{m}$ tall.
+
+    \vspace{1em}
+    \textbf{推导:}
+
+    科里奥利参数 $\coriolis = 2 \Omega \sin \latitude = 2 \times 7.292 \times 10^{-5} \times \sin(41^\circ) \approx 9.57 \times 10^{-5}\,\mathrm{s^{-1}}$。
+
+    计算Ekman深度 $\ekmandepth$:
+    \begin{equation*}
+        \ekmandepth = \sqrt{\frac{2\eddyviscv}{\coriolis}} = \sqrt{\frac{2 \times 10}{9.57 \times 10^{-5}}} \approx 457\,\mathrm{m}
+    \end{equation*}
+
+    帝国大厦顶端高度 $z = 381\,\mathrm{m}$。
+    无量纲高度 $z/\ekmandepth = 381/457 \approx 0.834$。
+    设地转风方向为 $x$ 轴 (西风)，代入Ekman层理论解 \eqref{eq:ekman_solution}:
+    \begin{align*}
+        \flayer{u} &= \mean{U} (1 - e^{-z/\ekmandepth} \cos(z/\ekmandepth)) \\
+        &= 12 \times (1 - e^{-0.834} \cos(0.834)) \approx 12 \times (1 - 0.434 \times 0.672) \approx 8.50\,\mathrm{m/s} \\
+        \flayer{v} &= \mean{U} e^{-z/\ekmandepth} \sin(z/\ekmandepth) \\
+        &= 12 \times (0.434 \times 0.741) \approx 3.86\,\mathrm{m/s}
+    \end{align*}
+
+    风速大小:
+    \begin{equation*}
+        \norm{\flayer{\vel}} = \sqrt{8.50^2 + 3.86^2} \approx 9.33\,\mathrm{m/s}
+    \end{equation*}
+
+    风向偏角 (相对于地转风向左偏):
+    \begin{equation*}
+        \alpha = \arctan\left(\frac{\flayer{v}}{\flayer{u}}\right) = \arctan\left(\frac{3.86}{8.50}\right) \approx 24.4^\circ
+    \end{equation*}
+
+    \item 所谓蒸发率 (或称蒸发速度)，是指近地面层内水汽的湍流铅直输送通量密度。
+    若以 $E^\prime$ 表示蒸发率，$q$ 为比湿，则有:
+    \begin{equation*}
+        E^\prime = Q_E = -\density K_E \pde{\mean{q}}{z}
+    \end{equation*}
+
+    在中性层结条件下，已知 $0.5\,\mathrm{m}$ 高度上水汽压为 $13.4\,\mathrm{hPa}$，$2\,\mathrm{m}$ 高度上水汽压为 $13.0\,\mathrm{hPa}$，$1\,\mathrm{m}$ 高度上水汽湍流扩散系数 $K_E$ 为 $0.1\,\mathrm{m^2/s}$。
+    设近地面层气压为 $1000\,\mathrm{hPa}$，密度取 $1.3\,\mathrm{kg/m^3}$，求蒸发率 $E^\prime$。
+
+    \vspace{1em}
+    \textbf{解:}
+
+    首先，利用近似公式 $q \approx 0.622 \frac{e}{p}$ 将水汽压转换为比湿:
+    \begin{align*}
+        q_{0.5} &= 0.622 \times \frac{13.4}{1000} = 8.3348 \times 10^{-3}\,\mathrm{kg/kg} \\
+        q_{2.0} &= 0.622 \times \frac{13.0}{1000} = 8.0860 \times 10^{-3}\,\mathrm{kg/kg}
+    \end{align*}
+
+    在中性层结条件下，近地面层水汽分布遵循对数律，即 $\mean{q} \sim \ln z$。
+    因此，比湿的垂直梯度 $\pde{\mean{q}}{z}$ 与高度 $z$ 成反比。
+    利用 $0.5\,\mathrm{m}$ 和 $2.0\,\mathrm{m}$ 处的比湿差确定 $1\,\mathrm{m}$ 处的梯度:
+    \begin{equation*}
+        \left.\pde{\mean{q}}{z}\right|_{z = 1\,\mathrm{m}} \approx \frac{q_{2.0} - q_{0.5}}{\ln(2\,\mathrm{m}/0.5\,\mathrm{m})} \cdot \frac{1}{1\,\mathrm{m}} = \frac{(8.0860 - 8.3348) \times 10^{-3}}{\ln(2.0/0.5)} \times \frac{1}{1} \approx -1.795 \times 10^{-4}\,\mathrm{m^{-1}}
+    \end{equation*}
+
+    将已知参数 $\density = 1.3\,\mathrm{kg/m^3}$，$K_E = 0.1\,\mathrm{m^2/s}$ 代入蒸发率公式:
+    \begin{equation*}
+        E^\prime = -\density K_E \left.\pde{\mean{q}}{z}\right|_{z = 1\,\mathrm{m}} = -1.3 \times 0.1 \times (-1.795 \times 10^{-4}) = 2.33 \times 10^{-5}\,\mathrm{kg/(m^2 \cdot s)}
+    \end{equation*}
+
+    \item 令 $A$ 为单位质量空气微团所具有的某种物理属性量，$x, y, z$ 方向上湍流对属性 $A$ 的输送通量密度分别用 $Q_x, Q_y, Q_z$ 表示:
+    \begin{equation*}
+        \ivec{Q} = (Q_x, Q_y, Q_z) = (\mean{\density \fluct{u} \fluct{A}}, \mean{\density \fluct{v} \fluct{A}}, \mean{\density \fluct{w} \fluct{A}})
+    \end{equation*}
+
+    由于湍流对属性 $A$ 的输送，定会造成平均属性 $\mean{A}$ 的变化，其数学形式称湍流输送方程。
+    试证明湍流输送方程的一般形式为:
+    \begin{equation*}
+        \pde{\mean{A}}{\timevar} = -\frac{1}{\density} \nabla \cdot \ivec{Q}
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    根据属性 $A$ 的守恒性，连续性方程为:
+    \begin{equation*}
+        \pde{(\density A)}{\timevar} + \nabla \cdot (\density A \vel) = 0
+    \end{equation*}
+
+    引入雷诺分解: $A = \mean{A} + \fluct{A}$, $\vel = \mean{\vel} + \fluct{\vel}$。
+    对上述方程应用平均算子:
+    \begin{equation*}
+        \pde{(\density \mean{A})}{\timevar} + \nabla \cdot (\density \mean{A} \mean{\vel}) + \nabla \cdot (\mean{\density} \fluct{A} \fluct{\vel}) = 0 \tag {a}
+    \end{equation*}
+
+    将前两项展开，应用平均化的连续性方程 \eqref{eq:continuity_reynolds}:
+    \begin{align*}
+        \pde{(\density \mean{A})}{\timevar} + \nabla \cdot (\density \mean{A} \mean{\vel}) &= \mean{A} \pde{\density}{\timevar} + \density \pde{\mean{A}}{\timevar} + \mean{A} (\nabla \cdot (\density \mean{\vel})) + (\density \mean{\vel}) \cdot \nabla \mean{A} \\
+        &= \mean{A} \underbrace{\left(\pde{\density}{\timevar} + \nabla \cdot (\density \mean{\vel})\right)}_{\text{平均化的连续性方程}} + \density \left(\pde{\mean{A}}{\timevar} + \mean{\vel} \cdot \nabla \mean{A}\right) \\
+        &= \density \matderiv{\mean{A}}
+    \end{align*}
+
+    代回 (a):
+    \begin{equation*}
+        \density \matderiv{\mean{A}} + \nabla \cdot \ivec{Q} = 0
+    \end{equation*}
+
+    若假定平均场的平流输送项可以忽略 ($\mean{\vel} \cdot \nabla \mean{A} \approx 0$)，仅考虑湍流输送引起的局地变化，整理得:
+    \begin{equation*}
+        \pde{\mean{A}}{\timevar} = - \frac{1}{\density} \nabla \cdot \ivec{Q}
+    \end{equation*}
+
+    \qed
+
+    \item 根据Ekman螺线定律，证明:
+
+    (1) 当 $z = \frac{\pi}{4} \ekmandepth$ 时，$\flayer{v}$ 达到最大值。
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    根据Ekman层理论解 \eqref{eq:ekman_solution}，经向风速分量为 $\flayer{v} = \mean{U} e^{-z/\ekmandepth} \sin(z/\ekmandepth)$。
+
+    令无量纲高度 $\xi = z/\ekmandepth$，则 $\flayer{v} = \mean{U} e^{-\xi} \sin \xi$。
+    为求极值，对 $\xi$ 求导并令其为零:
+    \begin{equation*}
+        \ode{\flayer{v}}{\xi} = \mean{U} e^{-\xi} (\cos \xi - \sin \xi) = 0
+    \end{equation*}
+
+    当 $\tan \xi = 1$ 时，$\flayer{v}$ 取得极值。
+    在 $z > 0$ 的范围内，第一个解为 $\xi = \pi/4$ (即 $z = \frac{\pi}{4} \ekmandepth$)。
+    容易验证，此为最大值点:
+    \begin{equation*}
+        \flayer{v}_{\max} = \mean{U} e^{-\pi/4} \sin(\pi/4) = 0.322 \mean{U}
+    \end{equation*}
+
+    \qed
+
+    (2) 当 $z = \frac{\pi}{2} \ekmandepth$ 时，$\flayer{u} = \mean{U}$，$\flayer{v} = \mean{U} e^{-\pi/2}$。
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    将 $z = \frac{\pi}{2} \ekmandepth$ 代入 Ekman层理论解 \eqref{eq:ekman_solution} 计算:
+    \begin{align*}
+        \flayer{u} &= \mean{U} (1 - e^{-\pi/2} \cos(\pi/2)) = \mean{U} \\
+        \flayer{v} &= \mean{U} e^{-\pi/2} \sin(\pi/2) = \mean{U} e^{-\pi/2}
+    \end{align*}
+
+    \qed
+
+    (3) 当 $z = \pi \ekmandepth$ 时，$\flayer{u} > \mean{U}$，$\flayer{v} = 0$。
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    将 $z = \pi \ekmandepth$ 代入 Ekman层理论解 \eqref{eq:ekman_solution} 计算:
+    \begin{align*}
+        \flayer{u} &= \mean{U} (1 - e^{-\pi} \cos(\pi)) = \mean{U} (1 + e^{-\pi}) > \mean{U} \\
+        \flayer{v} &= \mean{U} e^{-\pi} \sin(\pi) = 0
+    \end{align*}
+
+    \qed
+
+\end{enumerate}
+
+\subsection*{第四次作业}
+
+\begin{enumerate}
+
+    \item 若定义微尺度运动: $\hscale = 10^3\,\mathrm{m}$，$\vscale = 10^3\,\mathrm{m}$，$\hvel = 10\,\mathrm{m/s}$，$\vvel = 10\,\mathrm{m/s}$，$\timescale = 10^3\,\mathrm{s}$，$\pressure^\prime=10^4\,\mathrm{Pa}$，$\coriolis_0=10^{-4}\,\mathrm{s^{-1}}$，$\density_0=1\,\mathrm{kg/m^3}$。
+    应用尺度分析方法对微尺度运动方程各项作出分析。
+
+    \vspace{1em}
+    \textbf{解:}
+
+    \textbf{1. 水平运动方程分析}
+
+    水平动量方程:
+    \begin{equation*}
+        \underbrace{\pde{\vel_h}{\timevar}}_{\text{局地变化}} + \underbrace{(\vel \cdot \nabla) \vel_h}_{\text{平流项}} = -\underbrace{\coriolis \kvec \times \vel_h}_{\text{科里奥利力}} - \underbrace{\frac{1}{\density} \nabla_h \pressure^\prime}_{\text{气压梯度力}}
+    \end{equation*}
+
+    \begin{itemize}
+        \item 惯性项 (局地变化): $\frac{\hvel}{\timescale} = \frac{10}{10^3} = 10^{-2}\,\mathrm{m/s^2}$；
+        \item 惯性项 (平流项): $\frac{\hvel^2}{\hscale} \sim \frac{\vvel \hvel}{\vscale} = \frac{10^2}{10^3} = 10^{-1}\,\mathrm{m/s^2}$；
+        \item 科里奥利力: $\coriolis_0 \hvel = 10^{-4} \times 10 = 10^{-3}\,\mathrm{m/s^2}$；
+        \item 气压梯度力: $\frac{\pressure^\prime}{\density_0 \hscale} = \frac{10^4}{1 \times 10^3} = 10\,\mathrm{m/s^2}$。
+    \end{itemize}
+
+    \begin{enumerate}
+        \item Rossby数:
+        \begin{equation*}
+            \ro = \frac{\hvel}{\coriolis_0 \hscale} = \frac{10}{10^{-4} \times 10^3} = 100 \gg 1
+        \end{equation*}
+
+        由于 $\ro \gg 1$，科里奥利力远小于惯性力，在微尺度运动中可以忽略不计，地转平衡关系不再适用。
+
+        \item 水平气压梯度力 ($10^1$) 显著大于惯性项 ($10^{-1}$)，这表明压力尺度 $\pressure^\prime$ 反映的是垂直方向上的静力平衡，而非驱动水平运动的有效扰动气压。
+    \end{enumerate}
+
+    \textbf{2. 垂直运动方程分析}
+
+    垂直动量方程各项的量级估计如下:
+    \begin{equation*}
+        \underbrace{\pde{w}{\timevar}}_{\text{局地变化}} + \underbrace{(\vel \cdot \nabla) w}_{\text{平流项}} = - \underbrace{\gravityconst}_{\text{重力}} - \underbrace{\frac{1}{\density} \pde{\pressure^\prime}{z}}_{\text{气压梯度力}}
+    \end{equation*}
+
+    \begin{itemize}
+        \item 局地变化: $\frac{\vvel}{\timescale} = \frac{10}{10^3} = 10^{-2}\,\mathrm{m/s^2}$；
+        \item 平流项: $ \frac{\hvel \vvel}{\hscale} \sim \frac{\vvel^2}{\vscale} = \frac{10 \times 10}{10^3} = 10^{-1}\,\mathrm{m/s^2}$；
+        \item 重力: $\gravityconst \approx 10\,\mathrm{m/s^2}$。
+        \item 气压梯度力: $\frac{\pressure^\prime}{\density_0 \vscale} = \frac{10^4}{1 \times 10^3} = 10\,\mathrm{m/s^2}$；
+    \end{itemize}
+
+    \begin{enumerate}
+        \item 垂直气压梯度力与重力同量级 ($10^1$)，且远大于垂直加速度项 ($10^{-1}$)，这表明在微尺度运动中垂直方向上满足静力平衡。
+        \item 垂直加速度 ($10^{-1}$) 与水平加速度 ($10^{-1}$) 量级相当，垂直运动不可忽略。
+    \end{enumerate}
+
+    \item 考虑静态背景的正压浅水模型方程组:
+    \begin{align*}
+        \pde{\vel_h}{\timevar} + (\vel_h \cdot \nabla) \vel_h + \coriolis \kvec \times \vel_h &= -\nabla_h \gravpotential^\prime \\
+        \pde{\gravpotential^\prime}{\timevar} + (\vel_h \cdot \nabla) \gravpotential^\prime+ C_0^2 \nabla_h \cdot \vel_h &= 0
+    \end{align*}
+    其中 $C_0^2 = \gravityconst \depth$。
+    进行尺度分析，证明 $\gravpotential^\prime$ 的尺度 $\Phi^\prime$ 满足:
+    \begin{equation*}
+        \Phi^\prime = \coriolis_0 \hvel \hscale \max(1, \ro)
+    \end{equation*}
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    时间尺度 $\timescale \sim \hscale/\hvel$，对动量方程各项进行量级估计:
+    \begin{equation*}
+        \underbrace{\pde{\vel_h}{\timevar} + (\vel_h \cdot \nabla) \vel_h}_{\hvel^2 / \hscale} + \underbrace{\coriolis \kvec \times \vel_h}_{\coriolis_0 \hvel} = -\underbrace{\nabla_h \gravpotential^\prime}_{\Phi^\prime / \hscale}
+    \end{equation*}
+
+    为维持动力学平衡，右端项的量级必须与左端主导项的量级相当:
+    \begin{equation*}
+        \Phi^\prime \sim \hscale \max\left(\frac{\hvel^2}{\hscale}, \coriolis_0 \hvel\right) = \max\left(\frac{\hvel}{\coriolis_0 \hscale} \coriolis_0 \hvel \hscale,\coriolis_0 \hvel \hscale\right) =
+        \coriolis_0 \hvel \hscale \max(1, \ro)
+    \end{equation*}
+
+    \qed
+
+    \item 证明:
+    \begin{align*}
+        \frac{\eh}{2} &= \frac{\ro}{(\re)_H} \\
+        \vhratio^2 \frac{\ev}{2} &= \frac{\ro}{(\re)_V}
+    \end{align*}
+
+    其中水平雷诺数 $(\re)_H = \frac{\hvel \hscale}{\eddyvisch}$，垂直雷诺数 $(\re)_V = \frac{\hvel \hscale}{\eddyviscv}$。
+
+    \vspace{1em}
+    \textbf{证明:}
+
+    根据定义:
+    \begin{equation*}
+        \ro = \frac{\hvel}{\coriolis \hscale}, \quad \vhratio = \frac{\vscale}{\hscale}, \quad \eh = \frac{2\eddyvisch}{\coriolis \hscale^2}, \quad \ev = \frac{2\eddyviscv}{\coriolis \vscale^2}
+    \end{equation*}
+
+    代入:
+    \begin{align*}
+        \frac{\ro}{(\re)_H} &= \frac{\hvel}{\coriolis \hscale} \cdot \frac{\eddyvisch}{\hvel \hscale} = \frac{\eddyvisch}{\coriolis \hscale^2} = \frac{1}{2} \left(\frac{2\eddyvisch}{\coriolis \hscale^2}\right) = \frac{\eh}{2} \\
+        \frac{\ro}{(\re)_V} &= \frac{\hvel}{\coriolis \hscale} \cdot \frac{\eddyviscv}{\hvel \hscale} = \frac{\eddyviscv}{\coriolis \hscale^2} = \frac{1}{2} \left(\frac{2\eddyviscv}{\coriolis \vscale^2}\right) \left(\frac{\vscale^2}{\hscale^2}\right) = \vhratio^2 \frac{\ev}{2}
+    \end{align*}
+
+    \qed
+
+\end{enumerate}

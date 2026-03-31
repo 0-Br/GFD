@@ -1,0 +1,90 @@
+\section*{附录: 补充证明}
+
+\subsection*{涡旋拉伸效应 (Proof of \eqref{eq:vortex_stretching})}
+
+\begin{equation}
+    \kvec \cdot \left(\nabla_h \times \matderiv{\vel_h}\right) = \matderiv{\relvort} + \relvort (\nabla_h \cdot \vel_h)
+    \label{eq:vortex_stretching_proof}
+\end{equation}
+
+\vspace{1em}
+\textbf{证明:}
+
+首先，将左式中的物质导数展开:
+\begin{align*}
+    \kvec \cdot \left(\nabla_h \times \matderiv{\vel_h}\right)
+    &= \kvec \cdot \left[\nabla_h \times \left(\pde{\vel_h}{\timevar} + (\vel_h \cdot \nabla_h)\vel_h\right)\right] \\
+    &= \kvec \cdot \left[\nabla_h \times \pde{\vel_h}{\timevar}\right] + \kvec \cdot \left[\nabla_h \times \left((\vel_h \cdot \nabla_h)\vel_h\right)\right] \\
+    &= \pde{\relvort}{\timevar} + \kvec \cdot \left[\nabla_h \times \left((\vel_h \cdot \nabla_h)\vel_h\right)\right]
+\end{align*}
+
+对于第二项，利用矢量恒等式:
+\begin{align*}
+(\vel_h \cdot \nabla_h)\vel_h = \nabla_h \left(\frac{\norm{\vel_h}^2}{2}\right) - \vel_h \times (\nabla_h \times \vel_h)
+\end{align*}
+
+其中 $\nabla_h \left(\frac{\norm{\vel_h}^2}{2}\right)$ 的旋度为零，因此:
+\begin{align*}
+    \kvec \cdot \left[\nabla_h \times \left((\vel_h \cdot \nabla_h)\vel_h\right)\right]
+    &= -\kvec \cdot \left[\nabla_h \times \left(\vel_h \times (\nabla_h \times \vel_h)\right)\right] \\
+    &= -\kvec \cdot \left[\nabla_h \times (\vel_h \times (\relvort \kvec))\right] \\
+    &= -\kvec \cdot \left[-(\vel_h \cdot \nabla_h \relvort) \kvec - \relvort(\nabla_h \cdot \vel_h) \kvec\right] \\
+    &= (\vel_h \cdot \nabla_h \relvort) + \relvort(\nabla_h \cdot \vel_h)
+\end{align*}
+
+综上，合并各项:
+\begin{align*}
+    \kvec \cdot \left(\nabla_h \times \matderiv{\vel_h}\right)
+    &= \pde{\relvort}{\timevar} + (\vel_h \cdot \nabla_h \relvort) + \relvort(\nabla_h \cdot \vel_h) \\
+    &= \matderiv{\relvort} + \relvort(\nabla_h \cdot \vel_h)
+\end{align*}
+
+\qed
+
+\subsection*{惯性振荡 (Proof of \eqref{eq:inertial_oscillation_condition})}
+
+在关于Kelvin波的讨论中，若 $\frequency^2 = \coriolis^2$，则:
+\begin{equation}
+    \frequency^2 = k^2 C_0^2 \quad \text{or} \quad k = 0
+    \label{eq:inertial_oscillation_condition_proof}
+\end{equation}
+
+\vspace{1em}
+\textbf{证明:}
+
+由于 $\gamma = \frac{\coriolis k}{\frequency} > 0$，故 $\frequency = \coriolis$。
+回到 \eqref{eq:poincare_velocity_relation}，此时方程退化为:
+\begin{equation}
+    \ode{\complexamp{\gravpotential^\prime}}{y} + k \complexamp{\gravpotential^\prime} = 0
+    \label{eq:oscillation_ode}
+\end{equation}
+
+解为:
+\begin{equation}
+    \complexamp{\gravpotential^\prime}(y) = \complexamp{\gravpotential_0^\prime} e^{-k y}
+    \label{eq:wave_solution_oscillation}
+\end{equation}
+
+将 \eqref{eq:poincare_wave_ansatz} 代入 \eqref{eq:linear_swe_momentum} 和 \eqref{eq:linear_swe_thickness}，得到:
+\begin{align*}
+    \frac{-i \frequency}{C_0^2} \complexamp{\gravpotential^\prime} + i k \complexamp{u^\prime} + \ode{\complexamp{v^\prime}}{y} &= 0 \\
+    -i \frequency \complexamp{u^\prime} &= \frequency \complexamp{v^\prime} - i k \complexamp{\gravpotential^\prime}
+\end{align*}
+
+整理得到:
+\begin{equation*}
+    \ode{\complexamp{v^\prime}}{y} - k \complexamp{v^\prime} + \complexamp{\gravpotential_0^\prime} \frac{i k^2}{\frequency} \left(1 - \frac{\frequency^2}{k^2 C_0^2}\right) e^{-k y} = 0
+\end{equation*}
+
+关于 $\complexamp{v^\prime}$ 的解为:
+\begin{equation}
+    \complexamp{v^\prime}(y) = \complexamp{v_0^\prime} e^{k y} + \complexamp{\gravpotential_0^\prime} \frac{i k}{2\frequency} \left(1 - \frac{\frequency^2}{k^2 C_0^2}\right) e^{-k y}
+    \label{eq:v_solution_oscillation}
+\end{equation}
+
+考虑边界条件 $\complexamp{v^\prime}(0) = \complexamp{v^\prime}(L) = 0$，有:
+\begin{equation*}
+    (e^{k L} - e^{-k L}) \complexamp{\gravpotential_0^\prime} \frac{i k}{2\frequency} \left(1 - \frac{\frequency^2}{k^2 C_0^2}\right) = 0
+\end{equation*}
+
+因此，有两种可能的情况: $\frequency^2 = k^2 C_0^2$ 或 $k = 0$。
