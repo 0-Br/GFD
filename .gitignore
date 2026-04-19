@@ -24,6 +24,15 @@
 *.spl
 *-blx.bib
 
-# 系统
+# 系统文件
 .DS_Store
+._*
 Thumbs.db
+
+# 编辑器与 IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+\#*\#
